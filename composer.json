@@ -21,6 +21,11 @@
   "config": {
     "sort-packages": true
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "Tests/"
+    }
+  },
   "autoload": {
     "psr-4": {
       "PrestaShop\\DocToolsBundle\\": ""
@@ -33,5 +38,10 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^7.5 || ^8.5"
+  },
+  "scripts": {
+    "unit-tests": [
+      "@php -d date.timezone=UTC ./vendor/bin/phpunit -c tests/Unit/phpunit.xml"
+    ]
   }
 }

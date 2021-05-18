@@ -30,11 +30,24 @@ namespace PrestaShop\DocToolsBundle\CommandBus\Parser;
 
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionParameter;
 
 class CommandHandlerDefinitionParser
 {
     private const HANDLER_METHOD_NAME = 'handle';
     private const RETURN_TAG = '@return';
+    private const PARAM_TAG_REGEXP = '/@param\s*([^ ]*)\s+\$%s\s/';
+
+    /**
+     * @var DomainParserInterface
+     */
+    private $domainParser;
+
+    public function __construct(
+        DomainParserInterface $domainParser
+    ) {
+        $this->domainParser = $domainParser;
+    }
 
     /**
      * @param string $handlerClass
@@ -49,7 +62,7 @@ class CommandHandlerDefinitionParser
 
         return new CommandHandlerDefinition(
             $this->parseType($commandClass),
-            $this->parseDomain($commandClass),
+            $this->domainParser->parseDomain($commandClass),
             $handlerClass,
             $commandClass,
             $this->parseCommandConstructorParams($commandReflection),
@@ -72,15 +85,22 @@ class CommandHandlerDefinitionParser
 
         $params = [];
         foreach ($constructor->getParameters() as $parameter) {
-            $param = sprintf('%s', $parameter->getName());
-            if ($type = $parameter->getType()) {
+            $param = sprintf('$%s', $parameter->getName());
+            $type = $parameter->getType();
+            if (!$type) {
+                $type = $this->parseConstructorTypeFromDocblock($constructor, $parameter);
+            } else {
                 /* @phpstan-ignore-next-line ignoring getName() as method is not visible to phpstan */
-                $param = sprintf('%s %s', $type->getName(), $param);
+                $type = $type->getName();
+            }
+
+            if ($type) {
+                $param = sprintf('%s %s', $type, $param);
             }
 
             if ($parameter->isOptional()) {
                 if ($parameter->allowsNull()) {
-                    $param = sprintf('?%s', $param);
+                    $param = sprintf('?%s', str_replace('|null', '', $param));
                 }
                 $param = sprintf('%s = %s', $param, var_export($parameter->getDefaultValue(), true));
             }
@@ -117,7 +137,7 @@ class CommandHandlerDefinitionParser
             return $method->getReturnType()->getName();
         }
 
-        return null;
+        return 'void';
     }
 
     /**
@@ -139,6 +159,27 @@ class CommandHandlerDefinitionParser
             $returnType = str_replace(sprintf('%s ', self::RETURN_TAG), '', $returnType);
 
             return $returnType;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param ReflectionMethod $method
+     *
+     * @return string|null
+     */
+    private function parseConstructorTypeFromDocblock(ReflectionMethod $method, ReflectionParameter $parameter): ?string
+    {
+        $docBlock = $method->getDocComment();
+        if (!$docBlock) {
+            return null;
+        }
+
+        $regexp = sprintf(self::PARAM_TAG_REGEXP, $parameter->getName());
+        preg_match($regexp, $docBlock, $matches);
+        if (count($matches) > 1) {
+            return $matches[1];
         }
 
         return null;
@@ -188,17 +229,5 @@ class CommandHandlerDefinitionParser
         }
 
         return CommandHandlerDefinition::TYPE_QUERY;
-    }
-
-    /**
-     * @param string $commandClass
-     *
-     * @return string
-     */
-    private function parseDomain(string $commandClass): string
-    {
-        preg_match('/PrestaShop\\\\PrestaShop\\\\Core\\\\Domain\\\\([a-zA-Z]+)\\\\/', $commandClass, $matches);
-
-        return $matches[1];
     }
 }

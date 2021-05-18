@@ -16,14 +16,21 @@ services:
       - '@prestashop.doc_tools.command_bus.parser.command_handler_definition_parser'
       - '@filesystem'
       - '@twig'
-      - '@prestashop.doc_tools.util.string'
+      - '@prestashop.doc_tools.util.string.string_modifier'
     tags:
       - console.command
 
   # Utils
-  prestashop.doc_tools.util.string:
-    class: PrestaShop\DocToolsBundle\Util\String
+  prestashop.doc_tools.util.string.string_modifier:
+    class: PrestaShop\DocToolsBundle\Util\String\StringModifier
 
   # Command bus
   prestashop.doc_tools.command_bus.parser.command_handler_definition_parser:
     class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser'
+    arguments:
+      - '@prestashop.doc_tools.command_bus.parser.regexp_domain_parser'
+
+  prestashop.doc_tools.command_bus.parser.regexp_domain_parser:
+    class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser'
+    arguments:
+      - !php/const PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser::CORE_DOMAIN_REGEXP
