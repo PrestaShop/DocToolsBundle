@@ -26,18 +26,12 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\DocToolsBundle;
+namespace PrestaShop\DocToolsBundle\Util\String;
 
-use PrestaShop\DocToolsBundle\DependencyInjection\Compiler\CommandAndQueryCollectorPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class DocToolsBundle extends Bundle
+class StringModifier
 {
-    public function build(ContainerBuilder $container)
+    public function convertCamelCaseToKebabCase(string $string): string
     {
-        parent::build($container);
-
-        $container->addCompilerPass(new CommandAndQueryCollectorPass());
+        return strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $string));
     }
 }

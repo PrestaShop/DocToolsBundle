@@ -2,3 +2,28 @@ services:
   _defaults:
     public: true
 
+  # Commands
+  prestashop.doc_tools.command.list_commands_and_queries_command:
+    class: PrestaShop\DocToolsBundle\Command\ListCommandsAndQueriesCommand
+    arguments:
+      - '@prestashop.doc_tools.command_bus.parser.command_handler_definition_parser'
+    tags:
+      - console.command
+
+  prestashop.doc_tools.command.print_commands_and_queries_for_docs_command:
+    class: PrestaShop\DocToolsBundle\Command\PrintCommandsAndQueriesForDocsCommand
+    arguments:
+      - '@prestashop.doc_tools.command_bus.parser.command_handler_definition_parser'
+      - '@filesystem'
+      - '@twig'
+      - '@prestashop.doc_tools.util.string'
+    tags:
+      - console.command
+
+  # Utils
+  prestashop.doc_tools.util.string:
+    class: PrestaShop\DocToolsBundle\Util\String
+
+  # Command bus
+  prestashop.doc_tools.command_bus.parser.command_handler_definition_parser:
+    class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser'
