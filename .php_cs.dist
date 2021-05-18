@@ -3,11 +3,7 @@
 ini_set('memory_limit','256M');
 
 $finder = PhpCsFixer\Finder::create()->in([
-    __DIR__.'/Command',
-    __DIR__.'/CommandBus',
-    __DIR__.'/DependencyInjection',
-    __DIR__.'/Tests',
-    __DIR__.'/Util',
+    __DIR__.'/src',
 ]);
 
 return PhpCsFixer\Config::create()

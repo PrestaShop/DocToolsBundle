@@ -3,11 +3,7 @@ parameters:
 	bootstrapFiles:
 		- .github/workflows/autoload.php
 	paths:
-		- Command
-		- CommandBus
-		- DependencyInjection
-		- Tests
-		- Util
+		- src
 	ignoreErrors:
 		- '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:#'
 		- '#^Unsafe usage of new static\(\)\.$#'
