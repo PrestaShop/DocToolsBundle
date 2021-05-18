@@ -30,19 +30,21 @@ As usual, there are a few steps required to install this bundle:
         },
         // ...
         "repositories": [
+            // ...
             {
                 "type": "vcs",
                 "url": "https://github.com/myfork/DocToolsBundle",
                 "canonical": false
-            }
+            },
+            // ...
         ],
     }
 ```
 
-1.c **Run composer install to update your vendor folder**
+1.c **Run composer require to update your vendor folder**
 
 ```bash
-$ composer install
+$ composer require prestashop/doc-tools-bundle
 ```
 
 2 **Add this bundle to your application kernel**:
