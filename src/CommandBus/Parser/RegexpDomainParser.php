@@ -41,12 +41,13 @@ class RegexpDomainParser implements DomainParserInterface
     /**
      * @param string $regexp
      */
-    public function __construct(string $regexp) {
+    public function __construct(string $regexp)
+    {
         $this->regexp = $regexp;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function parseDomain(string $commandClass): string
     {

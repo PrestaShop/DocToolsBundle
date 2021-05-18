@@ -52,7 +52,6 @@ class ListCommandsAndQueriesCommand extends ContainerAwareCommand
     ) {
         parent::__construct();
         $this->handlerDefinitionParser = $handlerDefinitionParser;
-
     }
 
     /**
