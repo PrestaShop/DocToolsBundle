@@ -74,7 +74,7 @@ class CommandDefinitionPrinter
         }
 
         foreach ($definitions as $domain => $definitionsByType) {
-            $content = $this->twig->render('@PrestaShop/Command/CQRS/cqrs-commands-list.md.twig', [
+            $content = $this->twig->render('@PrestaShopDocTools/Commands/CQRS/cqrs-commands-list.md.twig', [
                 'domain' => $domain,
                 'definitionsByType' => $definitionsByType,
             ]);
@@ -82,7 +82,7 @@ class CommandDefinitionPrinter
             $this->filesystem->dumpFile($this->getDestinationFilePath($destinationDir, $domain), $content);
         }
 
-        $indexFileContent = $this->twig->render('@PrestaShop/Command/CQRS/cqrs-commands-index.md.twig');
+        $indexFileContent = $this->twig->render('@PrestaShopDocTools/Commands/CQRS/cqrs-commands-index.md.twig');
         $this->filesystem->dumpFile(sprintf('%s/_index.md', $destinationDir), $indexFileContent);
     }
 

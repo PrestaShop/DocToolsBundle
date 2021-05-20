@@ -30,10 +30,11 @@ namespace PrestaShop\DocToolsBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class DocToolsExtension extends Extension
+class DocToolsExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * @param array $configs
@@ -45,5 +46,18 @@ class DocToolsExtension extends Extension
         $loader->load('services.yml');
 
         $this->processConfiguration(new Configuration(), $configs);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        $container->setParameter('doc_tools_dir', __DIR__ . '/..');
+        $container->prependExtensionConfig('twig', [
+            'paths' => [
+                '%doc_tools_dir%/Resources/views' => 'PrestaShopDocTools',
+            ],
+        ]);
     }
 }

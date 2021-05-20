@@ -5,17 +5,10 @@ Helper tools for documentation
 
 As usual, there are a few steps required to install this bundle:
 
-1.a **Add this bundle to your project as a composer dependency**:
+1.a **Add this bundle to your project using composer**:
 
-```javascript
-    // composer.json
-    {
-        // ...
-        require-dev: {
-            // ...
-            "prestashop/doc-tools-bundle": "dev-main"
-        }
-    }
+```bash
+$ composer require prestashop/doc-tools-bundle
 ```
 
 1.b **Add this bundle to your project as a composer dependency (from your forked repository)**:
@@ -41,13 +34,11 @@ As usual, there are a few steps required to install this bundle:
     }
 ```
 
-1.c **Run composer require to update your vendor folder**
-
 ```bash
 $ composer require prestashop/doc-tools-bundle
 ```
 
-2 **Add this bundle to your application kernel**:
+2. **Add this bundle to your application kernel**:
 
 ```php
     // app/AppKernel.php
@@ -62,8 +53,11 @@ $ composer require prestashop/doc-tools-bundle
     }
 ```
 
-3 **How to use**
+3. **How to use**
 
 This bundle includes a few commands that you can use to generate documentations. The PrestaShop dev documentation is
-versioned in this repository https://github.com/PrestaShop/docs so you will have to clone it as well in order to export
-the generation documentation.
+versioned in this repository https://github.com/PrestaShop/docs, so you will have to clone it as well in order to export
+the generated documentation.
+
+## Command list
+
