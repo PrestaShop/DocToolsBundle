@@ -29,7 +29,7 @@ declare(strict_types=1);
 namespace PrestaShop\DocToolsBundle\Command;
 
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection;
-use PrestaShop\DocToolsBundle\Util\String\StringModifier;
+use PrestaShop\DocToolsBundle\CommandBus\Printer\CommandDefinitionPrinter;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,7 +37,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Filesystem\Filesystem;
-use Twig\Environment;
 
 /**
  * Prints all existing commands and queries to .md file for documentation
@@ -65,36 +64,29 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     private $handlerDefinitionCollection;
 
     /**
+     * @var CommandDefinitionPrinter
+     */
+    private $commandDefinitionPrinter;
+
+    /**
      * @var Filesystem
      */
     private $filesystem;
 
     /**
-     * @var Environment
-     */
-    private $twigEnv;
-
-    /**
-     * @var StringModifier
-     */
-    private $stringModifier;
-
-    /**
+     * @param CommandHandlerCollection $handlerDefinitionCollection
+     * @param CommandDefinitionPrinter $commandDefinitionPrinter
      * @param Filesystem $filesystem
-     * @param Environment $twigEnv
-     * @param StringModifier $stringModifier
      */
     public function __construct(
         CommandHandlerCollection $handlerDefinitionCollection,
-        Filesystem $filesystem,
-        Environment $twigEnv,
-        StringModifier $stringModifier
+        CommandDefinitionPrinter $commandDefinitionPrinter,
+        Filesystem $filesystem
     ) {
         parent::__construct();
         $this->handlerDefinitionCollection = $handlerDefinitionCollection;
+        $this->commandDefinitionPrinter = $commandDefinitionPrinter;
         $this->filesystem = $filesystem;
-        $this->twigEnv = $twigEnv;
-        $this->stringModifier = $stringModifier;
     }
 
     /**
@@ -138,40 +130,15 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
             return null;
         }
 
-        $this->filesystem->remove($destinationDir);
-
         $handlerAssociations = $this->getContainer()->getParameter('doc_tools.commands_and_queries');
         $definitions = $this->handlerDefinitionCollection->getDefinitionsByDomain($handlerAssociations);
 
-        foreach ($definitions as $domain => $definitionsByType) {
-            $content = $this->twigEnv->render('@PrestaShop/Command/CQRS/cqrs-commands-list.md.twig', [
-                'domain' => $domain,
-                'definitionsByType' => $definitionsByType,
-            ]);
+        $force = $input->getOption(self::FORCE_OPTION_NAME);
+        $this->commandDefinitionPrinter->printDefinitionsDocumentation($definitions, $destinationDir, $force);
 
-            $this->filesystem->dumpFile($this->getDestinationFilePath($destinationDir, $domain), $content);
-        }
-
-        $indexFileContent = $this->twigEnv->render('@PrestaShop/Command/CQRS/cqrs-commands-index.md.twig');
-        $this->filesystem->dumpFile(sprintf('%s/_index.md', $destinationDir), $indexFileContent);
         $output->writeln(sprintf('<info>dumped commands & queries to %s</info>', $destinationDir));
 
         return 0;
-    }
-
-    /**
-     * @param string $targetDir
-     * @param string $domain
-     *
-     * @return string
-     */
-    private function getDestinationFilePath(string $targetDir, string $domain): string
-    {
-        return sprintf(
-            '%s/%s.md',
-            $targetDir,
-            $this->stringModifier->convertCamelCaseToKebabCase($domain)
-        );
     }
 
     /**
@@ -185,7 +152,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     {
         $force = $input->getOption(self::FORCE_OPTION_NAME);
 
-        if ($force || !$this->filesystem->exists($targetDir)) {
+        if (null === $force || !$this->filesystem->exists($targetDir)) {
             return true;
         }
 

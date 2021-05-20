@@ -14,9 +14,8 @@ services:
     class: PrestaShop\DocToolsBundle\Command\PrintCommandsAndQueriesForDocsCommand
     arguments:
       - '@prestashop.doc_tools.command_bus.parser.command_handler_collection'
+      - '@prestashop.doc_tools.command_bus.printer.command_definition_printer'
       - '@filesystem'
-      - '@twig'
-      - '@prestashop.doc_tools.util.string.string_modifier'
     tags:
       - console.command
 
@@ -39,3 +38,10 @@ services:
     class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser'
     arguments:
       - !php/const PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser::CORE_DOMAIN_REGEXP
+
+  prestashop.doc_tools.command_bus.printer.command_definition_printer:
+    class: 'PrestaShop\DocToolsBundle\CommandBus\Printer\CommandDefinitionPrinter'
+    arguments:
+      - '@filesystem'
+      - '@twig'
+      - '@prestashop.doc_tools.util.string.string_modifier'
