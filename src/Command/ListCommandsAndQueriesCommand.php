@@ -26,7 +26,7 @@
 
 namespace PrestaShop\DocToolsBundle\Command;
 
-use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser;
+use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,15 +43,15 @@ class ListCommandsAndQueriesCommand extends ContainerAwareCommand
     protected static $defaultName = 'prestashop:doc-tools:list-commands-and-queries';
 
     /**
-     * @var CommandHandlerDefinitionParser
+     * @var CommandHandlerCollection
      */
-    private $handlerDefinitionParser;
+    private $handlerDefinitionCollection;
 
     public function __construct(
-        CommandHandlerDefinitionParser $handlerDefinitionParser
+        CommandHandlerCollection $handlerDefinitionCollection
     ) {
         parent::__construct();
-        $this->handlerDefinitionParser = $handlerDefinitionParser;
+        $this->handlerDefinitionCollection = $handlerDefinitionCollection;
     }
 
     /**
@@ -70,14 +70,14 @@ class ListCommandsAndQueriesCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $commands = $this->getContainer()->getParameter('doc_tools.commands_and_queries');
         $outputStyle = new OutputFormatterStyle('blue', null);
         $output->getFormatter()->setStyle('blue', $outputStyle);
 
-        $i = 1;
-        foreach ($commands as $handlerName => $commandName) {
-            $commandDefinition = $this->handlerDefinitionParser->parseDefinition($handlerName, $commandName);
+        $handlerAssociations = $this->getContainer()->getParameter('doc_tools.commands_and_queries');
+        $definitions = $this->handlerDefinitionCollection->getDefinitions($handlerAssociations);
 
+        $i = 1;
+        foreach ($definitions as $commandDefinition) {
             $interfaces = '';
             if (!empty($commandDefinition->getHandlerInterfaces())) {
                 $interfaces = sprintf('(Implements: %s)', implode(', ', $commandDefinition->getHandlerInterfaces()));

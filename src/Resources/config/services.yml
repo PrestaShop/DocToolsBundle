@@ -6,14 +6,14 @@ services:
   prestashop.doc_tools.command.list_commands_and_queries_command:
     class: PrestaShop\DocToolsBundle\Command\ListCommandsAndQueriesCommand
     arguments:
-      - '@prestashop.doc_tools.command_bus.parser.command_handler_definition_parser'
+      - '@prestashop.doc_tools.command_bus.parser.command_handler_collection'
     tags:
       - console.command
 
   prestashop.doc_tools.command.print_commands_and_queries_for_docs_command:
     class: PrestaShop\DocToolsBundle\Command\PrintCommandsAndQueriesForDocsCommand
     arguments:
-      - '@prestashop.doc_tools.command_bus.parser.command_handler_definition_parser'
+      - '@prestashop.doc_tools.command_bus.parser.command_handler_collection'
       - '@filesystem'
       - '@twig'
       - '@prestashop.doc_tools.util.string.string_modifier'
@@ -25,6 +25,11 @@ services:
     class: PrestaShop\DocToolsBundle\Util\String\StringModifier
 
   # Command bus
+  prestashop.doc_tools.command_bus.parser.command_handler_collection:
+    class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection'
+    arguments:
+      - '@prestashop.doc_tools.command_bus.parser.command_handler_definition_parser'
+
   prestashop.doc_tools.command_bus.parser.command_handler_definition_parser:
     class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser'
     arguments:

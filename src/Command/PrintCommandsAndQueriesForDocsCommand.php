@@ -28,8 +28,7 @@ declare(strict_types=1);
 
 namespace PrestaShop\DocToolsBundle\Command;
 
-use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinition;
-use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser;
+use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection;
 use PrestaShop\DocToolsBundle\Util\String\StringModifier;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Exception\InvalidOptionException;
@@ -61,9 +60,9 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     private const FORCE_OPTION_NAME = 'force';
 
     /**
-     * @var CommandHandlerDefinitionParser
+     * @var CommandHandlerCollection
      */
-    private $handlerDefinitionParser;
+    private $handlerDefinitionCollection;
 
     /**
      * @var Filesystem
@@ -86,13 +85,13 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
      * @param StringModifier $stringModifier
      */
     public function __construct(
-        CommandHandlerDefinitionParser $handlerDefinitionParser,
+        CommandHandlerCollection $handlerDefinitionCollection,
         Filesystem $filesystem,
         Environment $twigEnv,
         StringModifier $stringModifier
     ) {
         parent::__construct();
-        $this->handlerDefinitionParser = $handlerDefinitionParser;
+        $this->handlerDefinitionCollection = $handlerDefinitionCollection;
         $this->filesystem = $filesystem;
         $this->twigEnv = $twigEnv;
         $this->stringModifier = $stringModifier;
@@ -141,8 +140,8 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
 
         $this->filesystem->remove($destinationDir);
 
-        $definitions = $this->getCommandHandlerDefinitions();
-        ksort($definitions);
+        $handlerAssociations = $this->getContainer()->getParameter('doc_tools.commands_and_queries');
+        $definitions = $this->handlerDefinitionCollection->getDefinitionsByDomain($handlerAssociations);
 
         foreach ($definitions as $domain => $definitionsByType) {
             $content = $this->twigEnv->render('@PrestaShop/Command/CQRS/cqrs-commands-list.md.twig', [
@@ -173,30 +172,6 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
             $targetDir,
             $this->stringModifier->convertCamelCaseToKebabCase($domain)
         );
-    }
-
-    /**
-     * @return array<string, array<string, array<int, CommandHandlerDefinition>>>
-     */
-    private function getCommandHandlerDefinitions(): array
-    {
-        $handlerDefinitions = $this->getContainer()->getParameter('doc_tools.commands_and_queries');
-        $commandDefinitionsByDomain = [];
-        foreach ($handlerDefinitions as $handlerClass => $commandClass) {
-            $commandDefinition = $this->handlerDefinitionParser->parseDefinition($handlerClass, $commandClass);
-
-            // Always preset command and query fields, this avoids bugs or additional checks in the twig template
-            if (!isset($commandDefinitionsByDomain[$commandDefinition->getDomain()])) {
-                $commandDefinitionsByDomain[$commandDefinition->getDomain()] = [
-                    CommandHandlerDefinition::TYPE_COMMAND => [],
-                    CommandHandlerDefinition::TYPE_QUERY => [],
-                ];
-            }
-
-            $commandDefinitionsByDomain[$commandDefinition->getDomain()][$commandDefinition->getType()][] = $commandDefinition;
-        }
-
-        return $commandDefinitionsByDomain;
     }
 
     /**
