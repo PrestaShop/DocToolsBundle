@@ -44,7 +44,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('docs_path')->defaultNull()->end()
-                ->scalarNode('docs_path')->defaultValue('src/content/1.7/development/architecture/domain/references')->end()
+                ->scalarNode('cqrs_folder')->defaultValue('src/content/1.7/development/architecture/domain/references')->end()
             ->end()
         ;
 
