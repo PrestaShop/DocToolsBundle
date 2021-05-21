@@ -36,7 +36,7 @@ use Tests\Resources\Domain\Manufacturer\ValueObject\ManufacturerId;
 class AddManufacturerHandler implements AddManufacturerHandlerInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle($command)
     {

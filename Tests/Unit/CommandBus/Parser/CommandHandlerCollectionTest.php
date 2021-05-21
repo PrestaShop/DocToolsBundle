@@ -146,7 +146,7 @@ class CommandHandlerCollectionTest extends TestCase
                         EditTaxCommand::class,
                     ],
                 ],
-            ]
+            ],
         ];
 
         yield [
@@ -173,7 +173,7 @@ class CommandHandlerCollectionTest extends TestCase
                         EditTaxCommand::class,
                     ],
                 ],
-            ]
+            ],
         ];
 
         yield [
@@ -204,7 +204,7 @@ class CommandHandlerCollectionTest extends TestCase
                         EditTaxCommand::class,
                     ],
                 ],
-            ]
+            ],
         ];
     }
 
@@ -222,7 +222,7 @@ class CommandHandlerCollectionTest extends TestCase
             $definition = $definitions[$index];
             $this->assertEquals($expectedHandler, $definition->getHandlerClass());
             $this->assertEquals($expectedCommand, $definition->getCommandClass());
-            $index++;
+            ++$index;
         }
     }
 
@@ -238,7 +238,7 @@ class CommandHandlerCollectionTest extends TestCase
                 GetTaxForEditingHandler::class => GetTaxForEditing::class,
                 AddTaxHandler::class => AddTaxCommand::class,
                 EditTaxHandler::class => EditTaxCommand::class,
-            ]
+            ],
         ];
 
         yield [
@@ -257,7 +257,7 @@ class CommandHandlerCollectionTest extends TestCase
                 GetTaxForEditingHandler::class => GetTaxForEditing::class,
                 AddTaxHandler::class => AddTaxCommand::class,
                 EditTaxHandler::class => EditTaxCommand::class,
-            ]
+            ],
         ];
     }
 

@@ -61,3 +61,16 @@ the generated documentation.
 
 ## Command list
 
+```bash
+prestashop
+  prestashop:doc-tools:list-commands-and-queries      Lists available CQRS commands and queries
+  prestashop:doc-tools:print-commands-and-queries     Prints available CQRS commands and queries to a file prepared for documentation
+```
+
+### prestashop:doc-tools:print-commands-and-queries
+
+When you generate CQRS commands documentation details you should export them into the `src/content/1.7/development/architecture/domain/references` folder of the Docs project.
+
+```bash
+php ./bin/console prestashop:doc-tools:print-commands-and-queries --dir=/path/to/doc_project/src/content/1.7/development/architecture/domain/references
+```

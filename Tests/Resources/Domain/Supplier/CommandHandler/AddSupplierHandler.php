@@ -34,7 +34,7 @@ use Tests\Resources\Domain\Supplier\ValueObject\SupplierId;
 class AddSupplierHandler implements AddSupplierHandlerInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(AddSupplierCommand $command)
     {

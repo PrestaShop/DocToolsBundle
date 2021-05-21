@@ -34,16 +34,16 @@ use Symfony\Component\HttpKernel\Kernel;
 class AppKernel extends Kernel
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new \PrestaShop\DocToolsBundle\DocToolsBundle(),
-        );
+        ];
 
         return $bundles;
     }
@@ -65,7 +65,7 @@ class AppKernel extends Kernel
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {

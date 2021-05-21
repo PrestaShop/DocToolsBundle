@@ -28,15 +28,13 @@ declare(strict_types=1);
 
 namespace Tests\Resources\Domain\Manufacturer\CommandHandler;
 
-use Tests\Resources\Domain\Manufacturer\Command\EditManufacturerCommand;
-
 /**
  * Implements interface and uses inheritdoc
  */
 class EditManufacturerHandler implements EditManufacturerHandlerInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle($command)
     {

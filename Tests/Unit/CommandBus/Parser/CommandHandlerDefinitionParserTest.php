@@ -287,14 +287,14 @@ class CommandHandlerDefinitionParserTest extends TestCase
 
         // Using PHPDoc
         yield [AddManufacturerHandler::class, AddManufacturerCommand::class, [
-                'string $name',
-                'bool $enabled',
-                'string[] $localizedShortDescriptions',
-                'string[] $localizedDescriptions',
-                'string[] $localizedMetaTitles',
-                'string[] $localizedMetaDescriptions',
-                'string[] $localizedMetaKeywords',
-                'array $shopAssociation',
+            'string $name',
+            'bool $enabled',
+            'string[] $localizedShortDescriptions',
+            'string[] $localizedDescriptions',
+            'string[] $localizedMetaTitles',
+            'string[] $localizedMetaDescriptions',
+            'string[] $localizedMetaKeywords',
+            'array $shopAssociation',
         ]];
         yield [EditManufacturerHandler::class, EditManufacturerCommand::class, ['int $manufacturerId']];
         yield [GetManufacturerForEditingHandler::class, GetManufacturerForEditing::class, ['int $manufacturerId']];

@@ -33,7 +33,7 @@ use Tests\Resources\Domain\Supplier\Command\EditSupplierCommand;
 class EditSupplierHandler implements EditSupplierHandlerInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(EditSupplierCommand $command)
     {
