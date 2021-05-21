@@ -47,10 +47,10 @@
   },
   "scripts": {
     "unit-tests": [
-      "@php -d date.timezone=UTC ./vendor/bin/phpunit -c tests/Unit/phpunit.xml"
+      "@php -d date.timezone=UTC ./vendor/bin/phpunit -c Tests/Unit/phpunit.xml"
     ],
     "integration-tests": [
-      "@php -d date.timezone=UTC ./vendor/bin/phpunit -c tests/Integration/phpunit.xml"
+      "@php -d date.timezone=UTC ./vendor/bin/phpunit -c Tests/Integration/phpunit.xml"
     ]
   }
 }
