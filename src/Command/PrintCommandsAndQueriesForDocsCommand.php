@@ -197,7 +197,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
                     self::DESTINATION_DIR_OPTION_NAME
                 ));
             }
-            $destinationPath = rtrim('/', $this->defaultDocsFolder) . '/' . ltrim('/', $this->internalCQRSFolder);
+            $destinationPath = rtrim($this->defaultDocsFolder, '/') . '/' . ltrim($this->internalCQRSFolder, '/');
         }
 
         if (!$this->filesystem->isAbsolutePath($destinationPath)) {
