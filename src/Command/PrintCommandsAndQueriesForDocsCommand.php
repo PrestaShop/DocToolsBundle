@@ -51,7 +51,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     /**
      * Option name for providing destination directory path
      */
-    private const DESTINATION_DIR_OPTION_NAME = 'dir';
+    private const DOCS_DIR_OPTION_NAME = 'docs-dir';
 
     /**
      * Option name for forcing command (remove all confirmations)
@@ -117,10 +117,10 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
             ->setDescription($description)
             ->setHelp($description . PHP_EOL . PHP_EOL . $example)
             ->addOption(
-                self::DESTINATION_DIR_OPTION_NAME,
+                self::DOCS_DIR_OPTION_NAME,
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Path to file into which all commands and queries should be printed'
+                'Path to docs folder'
             )
             ->addOption(
                 self::FORCE_OPTION_NAME,
@@ -189,17 +189,18 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
      */
     private function getDestinationDir(InputInterface $input): string
     {
-        $destinationPath = $input->getOption(self::DESTINATION_DIR_OPTION_NAME);
-        if (!$destinationPath) {
+        $docsPath = $input->getOption(self::DOCS_DIR_OPTION_NAME);
+        if (!$docsPath) {
             if (null === $this->defaultDocsFolder) {
                 throw new InvalidOptionException(sprintf(
                     'Option --%s is not provided. You must provide it or configure doc_tools_doc_path parameter',
-                    self::DESTINATION_DIR_OPTION_NAME
+                    self::DOCS_DIR_OPTION_NAME
                 ));
             }
-            $destinationPath = rtrim($this->defaultDocsFolder, '/') . '/' . ltrim($this->internalCQRSFolder, '/');
+            $docsPath = rtrim($this->defaultDocsFolder, '/');
         }
 
+        $destinationPath = $docsPath  . '/' . ltrim($this->internalCQRSFolder, '/');
         if (!$this->filesystem->isAbsolutePath($destinationPath)) {
             throw new InvalidOptionException(sprintf(
                 'Desination path %s invalid it must be an absolute path to a destination directory',

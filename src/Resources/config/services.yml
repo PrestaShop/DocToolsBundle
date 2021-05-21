@@ -50,3 +50,4 @@ services:
       - '@filesystem'
       - '@twig'
       - '@prestashop.doc_tools.util.string.string_modifier'
+      - '%doc_tools.cqrs_folder%'

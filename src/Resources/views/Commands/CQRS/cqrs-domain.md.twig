@@ -1,0 +1,17 @@
+---
+title: {{ domain }} domain
+---
+
+## {{ domain }} domain
+
+### {{ domain }} Commands
+
+{% for definition in domainDefinitions.command %}
+{{ '{{' }} partial "{{ partialFolder }}/{{ definition.simpleCommandClass }}.md" . {{ '}}' }}
+{% endfor %}
+
+### {{ domain }} Queries
+
+{% for definition in domainDefinitions.query %}
+{{ '{{' }} partial "{{ partialFolder }}/{{ definition.simpleCommandClass }}.md" . {{ '}}' }}
+{% endfor %}

@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace PrestaShop\DocToolsBundle\CommandBus\Printer;
 
+use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinition;
 use PrestaShop\DocToolsBundle\Util\String\StringModifier;
 use Symfony\Component\Filesystem\Filesystem;
 use Twig\Environment;
@@ -50,18 +51,36 @@ class CommandDefinitionPrinter
     private $stringModifier;
 
     /**
+     * @var string
+     */
+    private $cqrsFolder;
+
+    /**
+     * @var bool
+     */
+    private $forceRefresh;
+
+    /**
+     * @var string
+     */
+    private $destinationDir;
+
+    /**
      * @param Filesystem $filesystem
      * @param Environment $twig
      * @param StringModifier $stringModifier
+     * @param string $cqrsFolder
      */
     public function __construct(
         Filesystem $filesystem,
         Environment $twig,
-        StringModifier $stringModifier
+        StringModifier $stringModifier,
+        string $cqrsFolder
     ) {
         $this->filesystem = $filesystem;
         $this->twig = $twig;
         $this->stringModifier = $stringModifier;
+        $this->cqrsFolder = $cqrsFolder;
     }
 
     public function printDefinitionsDocumentation(
@@ -69,22 +88,20 @@ class CommandDefinitionPrinter
         string $destinationDir,
         bool $forceRefresh
     ): void {
+        $this->forceRefresh = $forceRefresh;
+        $this->destinationDir = $destinationDir;
         if ($forceRefresh) {
             $this->filesystem->remove($destinationDir);
         }
 
-        foreach ($definitions as $domain => $definitionsByType) {
-            $destinationFilePath = $this->getDestinationFilePath($destinationDir, $domain);
-            if (!$forceRefresh && $this->filesystem->exists($destinationFilePath)) {
-                continue;
+        foreach ($definitions as $domain => $domainDefinitions) {
+            $this->printDomainFile($domain, $domainDefinitions);
+            foreach ($domainDefinitions[CommandHandlerDefinition::TYPE_COMMAND] as $definition) {
+                $this->printDefinitionFile($definition, $domain);
             }
-
-            $content = $this->twig->render('@PrestaShopDocTools/Commands/CQRS/cqrs-commands-list.md.twig', [
-                'domain' => $domain,
-                'definitionsByType' => $definitionsByType,
-            ]);
-
-            $this->filesystem->dumpFile($destinationFilePath, $content);
+            foreach ($domainDefinitions[CommandHandlerDefinition::TYPE_QUERY] as $definition) {
+                $this->printDefinitionFile($definition, $domain);
+            }
         }
 
         $indexFilePath = sprintf('%s/_index.md', $destinationDir);
@@ -96,16 +113,77 @@ class CommandDefinitionPrinter
     }
 
     /**
-     * @param string $targetDir
+     * @param CommandHandlerDefinition $definition
+     * @param string $domain
+     */
+    private function printDefinitionFile(CommandHandlerDefinition $definition, string $domain): void
+    {
+        $definitionFilePath = $this->getDefinitionFilePath($definition, $domain);
+        if (!$this->forceRefresh && $this->filesystem->exists($definitionFilePath)) {
+            return;
+        }
+
+        if ($definition->getType() === CommandHandlerDefinition::TYPE_QUERY) {
+            $templatePath = '@PrestaShopDocTools/Commands/CQRS/cqrs-command.md.twig';
+        } else {
+            $templatePath = '@PrestaShopDocTools/Commands/CQRS/cqrs-query.md.twig';
+        }
+
+        $content = $this->twig->render($templatePath, [
+            'definition' => $definition,
+        ]);
+
+        $this->filesystem->dumpFile($definitionFilePath, $content);
+    }
+
+    /**
+     * @param string $domain
+     * @param array $domainDefinitions
+     */
+    private function printDomainFile(
+        string $domain,
+        array $domainDefinitions
+    ): void {
+        $domainFilePath = $this->getDomainFilePath($domain);
+        if (!$this->forceRefresh && $this->filesystem->exists($domainFilePath)) {
+            return;
+        }
+
+        $content = $this->twig->render('@PrestaShopDocTools/Commands/CQRS/cqrs-domain.md.twig', [
+            'domain' => $domain,
+            'domainDefinitions' => $domainDefinitions,
+            'partialFolder' => $this->cqrsFolder . '/partials',
+        ]);
+
+        $this->filesystem->dumpFile($domainFilePath, $content);
+    }
+
+    /**
+     * @param CommandHandlerDefinition $definition
      * @param string $domain
      *
      * @return string
      */
-    private function getDestinationFilePath(string $targetDir, string $domain): string
+    private function getDefinitionFilePath(CommandHandlerDefinition $definition, string $domain): string
     {
         return sprintf(
-            '%s/%s.md',
-            $targetDir,
+            '%s/%s/partials/%s.md',
+            $this->destinationDir,
+            $this->stringModifier->convertCamelCaseToKebabCase($domain),
+            $this->stringModifier->convertCamelCaseToKebabCase($definition->getSimpleCommandClass())
+        );
+    }
+
+    /**
+     * @param string $domain
+     *
+     * @return string
+     */
+    private function getDomainFilePath(string $domain): string
+    {
+        return sprintf(
+            '%s/%s/_index.md',
+            $this->destinationDir,
             $this->stringModifier->convertCamelCaseToKebabCase($domain)
         );
     }

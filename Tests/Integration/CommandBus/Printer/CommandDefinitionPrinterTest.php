@@ -33,6 +33,7 @@ use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection;
 use PrestaShop\DocToolsBundle\CommandBus\Printer\CommandDefinitionPrinter;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Tests\Resources\Domain\Manufacturer\Command\AddManufacturerCommand;
 use Tests\Resources\Domain\Manufacturer\Command\EditManufacturerCommand;
 use Tests\Resources\Domain\Manufacturer\CommandHandler\AddManufacturerHandler;
@@ -85,6 +86,9 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             true
         );
 
+        $finder = new Finder();
+        $filesNb = $finder->files()->in($this->tempFolder)->count();
+        $this->assertEquals(count($expectedFiles), $filesNb);
         foreach ($expectedFiles as $expectedFile) {
             $this->assertTrue($this->filesystem->exists($this->tempFolder . '/' . $expectedFile));
         }
@@ -103,8 +107,14 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             ],
             [
                 '_index.md',
-                'manufacturer.md',
-                'tax.md',
+                'manufacturer/_index.md',
+                'manufacturer/partials/get-manufacturer-for-editing.md',
+                'manufacturer/partials/add-manufacturer-command.md',
+                'manufacturer/partials/edit-manufacturer-command.md',
+                'tax/_index.md',
+                'tax/partials/get-tax-for-editing.md',
+                'tax/partials/add-tax-command.md',
+                'tax/partials/edit-tax-command.md',
             ],
         ];
     }
@@ -117,7 +127,12 @@ class CommandDefinitionPrinterTest extends KernelTestCase
     public function testPrintReplace(array $handlerAssociations, array $existingFiles, array $expectedFiles): void
     {
         foreach ($existingFiles as $existingFile) {
-            $this->filesystem->touch($this->tempFolder . '/' . $existingFile);
+            $existingFilePath = $this->tempFolder . '/' . $existingFile;
+            if (!is_dir(dirname($existingFilePath))) {
+                $this->filesystem->mkdir(dirname($existingFilePath));
+            }
+
+            $this->filesystem->touch($existingFilePath);
             $this->assertEquals('', file_get_contents($this->tempFolder . '/' . $existingFile));
         }
 
@@ -131,6 +146,9 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             false
         );
 
+        $finder = new Finder();
+        $filesNb = $finder->files()->in($this->tempFolder)->count();
+        $this->assertEquals(count($expectedFiles), $filesNb);
         foreach ($expectedFiles as $expectedFile) {
             $this->assertTrue($this->filesystem->exists($this->tempFolder . '/' . $expectedFile));
             if (in_array($expectedFile, $existingFiles)) {
@@ -154,13 +172,20 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             ],
             [
                 '_index.md',
-                'manufacturer.md',
-                'tax.md',
+                'manufacturer/partials/get-manufacturer-for-editing.md',
+                'manufacturer/partials/edit-manufacturer-command.md',
+                'tax/_index.md',
             ],
             [
                 '_index.md',
-                'manufacturer.md',
-                'tax.md',
+                'manufacturer/_index.md',
+                'manufacturer/partials/get-manufacturer-for-editing.md',
+                'manufacturer/partials/add-manufacturer-command.md',
+                'manufacturer/partials/edit-manufacturer-command.md',
+                'tax/_index.md',
+                'tax/partials/get-tax-for-editing.md',
+                'tax/partials/add-tax-command.md',
+                'tax/partials/edit-tax-command.md',
             ],
         ];
 
@@ -174,13 +199,19 @@ class CommandDefinitionPrinterTest extends KernelTestCase
                 GetManufacturerForEditingHandler::class => GetManufacturerForEditing::class,
             ],
             [
-                'manufacturer.md',
-                'tax.md',
+                'manufacturer/_index.md',
+                'tax/_index.md',
             ],
             [
                 '_index.md',
-                'manufacturer.md',
-                'tax.md',
+                'manufacturer/_index.md',
+                'manufacturer/partials/get-manufacturer-for-editing.md',
+                'manufacturer/partials/add-manufacturer-command.md',
+                'manufacturer/partials/edit-manufacturer-command.md',
+                'tax/_index.md',
+                'tax/partials/get-tax-for-editing.md',
+                'tax/partials/add-tax-command.md',
+                'tax/partials/edit-tax-command.md',
             ],
         ];
 
@@ -198,8 +229,14 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             ],
             [
                 '_index.md',
-                'manufacturer.md',
-                'tax.md',
+                'manufacturer/_index.md',
+                'manufacturer/partials/get-manufacturer-for-editing.md',
+                'manufacturer/partials/add-manufacturer-command.md',
+                'manufacturer/partials/edit-manufacturer-command.md',
+                'tax/_index.md',
+                'tax/partials/get-tax-for-editing.md',
+                'tax/partials/add-tax-command.md',
+                'tax/partials/edit-tax-command.md',
             ],
         ];
     }
