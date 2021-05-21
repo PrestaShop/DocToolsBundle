@@ -19,8 +19,8 @@ services:
       - '@prestashop.doc_tools.command_bus.parser.command_handler_collection'
       - '@prestashop.doc_tools.command_bus.printer.command_definition_printer'
       - '@filesystem'
-      - '%doc_tools.docs_path%'
       - '%doc_tools.cqrs_folder%'
+      - '%doc_tools.docs_path%'
     tags:
       - console.command
 
