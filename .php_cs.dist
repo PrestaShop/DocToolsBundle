@@ -3,11 +3,12 @@
 ini_set('memory_limit','256M');
 
 $finder = PhpCsFixer\Finder::create()
-->notPath('./src/DependencyInjection/Configuration.php')
+->notPath('DependencyInjection/Configuration.php')
 ->in([
     __DIR__.'/src',
     __DIR__.'/Tests',
-]);
+])
+;
 
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
