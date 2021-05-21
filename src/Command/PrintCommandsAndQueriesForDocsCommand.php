@@ -74,6 +74,16 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     private $filesystem;
 
     /**
+     * @var string
+     */
+    private $internalCQRSFolder;
+
+    /**
+     * @var string
+     */
+    private $defaultDocsFolder;
+
+    /**
      * @param CommandHandlerCollection $handlerDefinitionCollection
      * @param CommandDefinitionPrinter $commandDefinitionPrinter
      * @param Filesystem $filesystem
@@ -81,12 +91,16 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     public function __construct(
         CommandHandlerCollection $handlerDefinitionCollection,
         CommandDefinitionPrinter $commandDefinitionPrinter,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        string $internalCQRSFolder,
+        ?string $defaultDocsFolder
     ) {
         parent::__construct();
         $this->handlerDefinitionCollection = $handlerDefinitionCollection;
         $this->commandDefinitionPrinter = $commandDefinitionPrinter;
         $this->filesystem = $filesystem;
+        $this->internalCQRSFolder = $internalCQRSFolder;
+        $this->defaultDocsFolder = $defaultDocsFolder;
     }
 
     /**
@@ -105,7 +119,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
             ->addOption(
                 self::DESTINATION_DIR_OPTION_NAME,
                 null,
-                InputOption::VALUE_REQUIRED,
+                InputOption::VALUE_OPTIONAL,
                 'Path to file into which all commands and queries should be printed'
             )
             ->addOption(
@@ -176,18 +190,27 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     private function getDestinationDir(InputInterface $input): string
     {
         $destinationPath = $input->getOption(self::DESTINATION_DIR_OPTION_NAME);
+        if (!$destinationPath) {
+            if (null === $this->defaultDocsFolder) {
+                throw new InvalidOptionException(sprintf(
+                    'Option --%s is not provided. You must provide it or configure doc_tools_doc_path parameter',
+                    self::DESTINATION_DIR_OPTION_NAME
+                ));
+            }
+            $destinationPath = rtrim('/', $this->defaultDocsFolder) . '/' . ltrim('/', $this->internalCQRSFolder);
+        }
 
-        if (!$destinationPath || !$this->filesystem->isAbsolutePath($destinationPath)) {
+        if (!$this->filesystem->isAbsolutePath($destinationPath)) {
             throw new InvalidOptionException(sprintf(
-                'Option --%s is required. It should contain absolute path to a destination directory',
-                self::DESTINATION_DIR_OPTION_NAME
+                'Desination path %s invalid it must be an absolute path to a destination directory',
+                $destinationPath
             ));
         }
 
         if ($this->filesystem->exists($destinationPath) && !is_dir($destinationPath)) {
             throw new InvalidOptionException(sprintf(
                 '"%s" is not a directory',
-                self::DESTINATION_DIR_OPTION_NAME
+                $destinationPath
             ));
         }
 

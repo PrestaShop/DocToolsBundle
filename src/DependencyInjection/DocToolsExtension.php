@@ -45,7 +45,19 @@ class DocToolsExtension extends Extension implements PrependExtensionInterface
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-        $this->processConfiguration(new Configuration(), $configs);
+        $configuration = $this->processConfiguration(new Configuration(), $configs);
+
+        if ($container->hasParameter('doc_tools_doc_path')) {
+            $container->setParameter('doc_tools.docs_path', $container->getParameter('doc_tools_doc_path'));
+        } else {
+            $container->setParameter('doc_tools.docs_path', $configuration['docs_path']);
+        }
+
+        if ($container->hasParameter('doc_tools_cqrs_folder')) {
+            $container->setParameter('doc_tools.cqrs_folder', $container->getParameter('doc_tools_cqrs_folder'));
+        } else {
+            $container->setParameter('doc_tools.cqrs_folder', $configuration['cqrs_folder']);
+        }
     }
 
     /**
@@ -53,10 +65,10 @@ class DocToolsExtension extends Extension implements PrependExtensionInterface
      */
     public function prepend(ContainerBuilder $container)
     {
-        $container->setParameter('doc_tools_dir', __DIR__ . '/..');
+        $container->setParameter('doc_tools.root_dir', __DIR__ . '/..');
         $container->prependExtensionConfig('twig', [
             'paths' => [
-                '%doc_tools_dir%/Resources/views' => 'PrestaShopDocTools',
+                '%doc_tools.root_dir%/Resources/views' => 'PrestaShopDocTools',
             ],
         ]);
     }

@@ -53,7 +53,14 @@ $ composer require prestashop/doc-tools-bundle
     }
 ```
 
-3. **How to use**
+3. **Add parameters into your app/config/parameters.yml file**
+
+```yml
+# Path to the root dir
+doc_tools_doc_path: /path/to/Docs/root_dir
+```
+
+4. **How to use**
 
 This bundle includes a few commands that you can use to generate documentations. The PrestaShop dev documentation is
 versioned in this repository https://github.com/PrestaShop/docs, so you will have to clone it as well in order to export
@@ -73,4 +80,10 @@ When you generate CQRS commands documentation details you should export them int
 
 ```bash
 php ./bin/console prestashop:doc-tools:print-commands-and-queries --dir=/path/to/doc_project/src/content/1.7/development/architecture/domain/references
+```
+
+Or if you correctly set the `doc_tools_doc_path` parameter you can simply run:
+
+```bash
+php ./bin/console prestashop:doc-tools:print-commands-and-queries
 ```

@@ -39,7 +39,14 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('doc_tools');
+        $rootNode = $treeBuilder->root('doc_tools');
+
+        $rootNode
+            ->children()
+                ->scalarNode('docs_path')->defaultNull()->end()
+                ->scalarNode('docs_path')->defaultValue('src/content/1.7/development/architecture/domain/references')->end()
+            ->end()
+        ;
 
         return $treeBuilder;
     }

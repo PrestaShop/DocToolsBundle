@@ -1,0 +1,3 @@
+doc_tools:
+  docs_path: '%doc_tools_doc_path%'
+  internal_cqrs_folder: '%doc_tools_cqrs_folder%'
