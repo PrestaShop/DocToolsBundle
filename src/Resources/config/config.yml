@@ -1,3 +1,3 @@
 doc_tools:
-  docs_path: '%doc_tools_doc_path%'
-  internal_cqrs_folder: '%doc_tools_cqrs_folder%'
+  docs_path: ~
+  cqrs_folder: src/content/1.7/development/architecture/domain/references

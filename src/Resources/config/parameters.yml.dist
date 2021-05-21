@@ -1,3 +1,0 @@
-parameters:
-  doc_tools_doc_path: ~
-  doc_tools_cqrs_folder: src/content/1.7/development/architecture/domain/references

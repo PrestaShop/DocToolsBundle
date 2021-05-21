@@ -47,17 +47,8 @@ class DocToolsExtension extends Extension implements PrependExtensionInterface
 
         $configuration = $this->processConfiguration(new Configuration(), $configs);
 
-        if ($container->hasParameter('doc_tools_doc_path')) {
-            $container->setParameter('doc_tools.docs_path', $container->getParameter('doc_tools_doc_path'));
-        } else {
-            $container->setParameter('doc_tools.docs_path', $configuration['docs_path']);
-        }
-
-        if ($container->hasParameter('doc_tools_cqrs_folder')) {
-            $container->setParameter('doc_tools.cqrs_folder', $container->getParameter('doc_tools_cqrs_folder'));
-        } else {
-            $container->setParameter('doc_tools.cqrs_folder', $configuration['cqrs_folder']);
-        }
+        $container->setParameter('doc_tools.docs_path', $configuration['docs_path']);
+        $container->setParameter('doc_tools.cqrs_folder', $configuration['cqrs_folder']);
     }
 
     /**

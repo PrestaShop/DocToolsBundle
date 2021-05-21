@@ -53,11 +53,13 @@ $ composer require prestashop/doc-tools-bundle
     }
 ```
 
-3. **Add parameters into your app/config/parameters.yml file**
+3. **Configure the bundle via app/config**
 
 ```yml
-# Path to the root dir
-doc_tools_doc_path: /path/to/Docs/root_dir
+# app/config/config.yml
+doc_tools:
+  docs_path: /root/path/to/docs/project
+  cqrs_folder: src/content/1.7/development/architecture/domain/references
 ```
 
 4. **How to use**
@@ -82,7 +84,7 @@ When you generate CQRS commands documentation details you should export them int
 php ./bin/console prestashop:doc-tools:print-commands-and-queries --dir=/path/to/doc_project/src/content/1.7/development/architecture/domain/references
 ```
 
-Or if you correctly set the `doc_tools_doc_path` parameter you can simply run:
+Or if you correctly set the `docs_path` config you can simply run:
 
 ```bash
 php ./bin/console prestashop:doc-tools:print-commands-and-queries
