@@ -24,7 +24,10 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "Tests/"
-    }
+    },
+    "classmap": [
+      "Tests/Integration/AppKernel.php"
+    ]
   },
   "autoload": {
     "psr-4": {
@@ -34,6 +37,7 @@
   "require": {
     "php": ">=7.1",
     "symfony/symfony": "^3.4 || ^4.4",
+    "sensio/framework-extra-bundle": "^5.1",
     "twig/twig": "^1.38"
   },
   "require-dev": {
@@ -44,6 +48,9 @@
   "scripts": {
     "unit-tests": [
       "@php -d date.timezone=UTC ./vendor/bin/phpunit -c tests/Unit/phpunit.xml"
+    ],
+    "integration-tests": [
+      "@php -d date.timezone=UTC ./vendor/bin/phpunit -c tests/Integration/phpunit.xml"
     ]
   }
 }

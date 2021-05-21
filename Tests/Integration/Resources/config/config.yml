@@ -1,0 +1,2 @@
+parameters:
+  regexp_domain_parser: !php/const PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser::TEST_DOMAIN_REGEXP
