@@ -105,7 +105,102 @@ class CommandDefinitionPrinterTest extends KernelTestCase
                 '_index.md',
                 'manufacturer.md',
                 'tax.md',
-            ]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getPrintReplaceData
+     *
+     * @param array $handlerAssociations
+     */
+    public function testPrintReplace(array $handlerAssociations, array $existingFiles, array $expectedFiles): void
+    {
+        foreach ($existingFiles as $existingFile) {
+            $this->filesystem->touch($this->tempFolder . '/' . $existingFile);
+            $this->assertEquals('', file_get_contents($this->tempFolder . '/' . $existingFile));
+        }
+
+        $handlersByDomain = $this->getHandlersByDomain($handlerAssociations);
+
+        /** @var CommandDefinitionPrinter $printer */
+        $printer = self::$container->get('prestashop.doc_tools.command_bus.printer.command_definition_printer');
+        $printer->printDefinitionsDocumentation(
+            $handlersByDomain,
+            $this->tempFolder,
+            false
+        );
+
+        foreach ($expectedFiles as $expectedFile) {
+            $this->assertTrue($this->filesystem->exists($this->tempFolder . '/' . $expectedFile));
+            if (in_array($expectedFile, $existingFiles)) {
+                $this->assertEquals('', file_get_contents($this->tempFolder . '/' . $expectedFile));
+            } else {
+                $this->assertNotEquals('', file_get_contents($this->tempFolder . '/' . $expectedFile));
+            }
+        }
+    }
+
+    public function getPrintReplaceData(): Generator
+    {
+        yield [
+            [
+                GetTaxForEditingHandler::class => GetTaxForEditing::class,
+                EditTaxHandler::class => EditTaxCommand::class,
+                AddTaxHandler::class => AddTaxCommand::class,
+                EditManufacturerHandler::class => EditManufacturerCommand::class,
+                AddManufacturerHandler::class => AddManufacturerCommand::class,
+                GetManufacturerForEditingHandler::class => GetManufacturerForEditing::class,
+            ],
+            [
+                '_index.md',
+                'manufacturer.md',
+                'tax.md',
+            ],
+            [
+                '_index.md',
+                'manufacturer.md',
+                'tax.md',
+            ],
+        ];
+
+        yield [
+            [
+                GetTaxForEditingHandler::class => GetTaxForEditing::class,
+                EditTaxHandler::class => EditTaxCommand::class,
+                AddTaxHandler::class => AddTaxCommand::class,
+                EditManufacturerHandler::class => EditManufacturerCommand::class,
+                AddManufacturerHandler::class => AddManufacturerCommand::class,
+                GetManufacturerForEditingHandler::class => GetManufacturerForEditing::class,
+            ],
+            [
+                'manufacturer.md',
+                'tax.md',
+            ],
+            [
+                '_index.md',
+                'manufacturer.md',
+                'tax.md',
+            ],
+        ];
+
+        yield [
+            [
+                GetTaxForEditingHandler::class => GetTaxForEditing::class,
+                EditTaxHandler::class => EditTaxCommand::class,
+                AddTaxHandler::class => AddTaxCommand::class,
+                EditManufacturerHandler::class => EditManufacturerCommand::class,
+                AddManufacturerHandler::class => AddManufacturerCommand::class,
+                GetManufacturerForEditingHandler::class => GetManufacturerForEditing::class,
+            ],
+            [
+                '_index.md',
+            ],
+            [
+                '_index.md',
+                'manufacturer.md',
+                'tax.md',
+            ],
         ];
     }
 
