@@ -121,6 +121,11 @@ class EditSupplierCommand
     private $dni;
 
     /**
+     * @var int
+     */
+    private $zipCode;
+
+    /**
      * @param int $supplierId
      * @param string $name
      * @param string $address
@@ -131,14 +136,14 @@ class EditSupplierCommand
      * @param string[] $localizedMetaTitles
      * @param string[] $localizedMetaDescriptions
      * @param array $localizedMetaKeywords
-     * @param array $shopAssociation
+     * @param array $associatedShops
      * @param string|null $address2
      * @param string|null $postCode
      * @param int|null $stateId
      * @param string|null $phone
      * @param string $mobilePhone
      * @param string|null $dni
-     * @param int|null $zipCode
+     * @param int $zipCode
      */
     public function __construct(
         $supplierId,
@@ -151,7 +156,7 @@ class EditSupplierCommand
         $localizedMetaTitles,
         $localizedMetaDescriptions,
         $localizedMetaKeywords,
-        $shopAssociation,
+        $associatedShops,
         $address2 = null,
         $postCode = null,
         $stateId = null,
@@ -170,7 +175,7 @@ class EditSupplierCommand
         $this->localizedMetaTitles = $localizedMetaTitles;
         $this->localizedMetaDescriptions = $localizedMetaDescriptions;
         $this->localizedMetaKeywords = $localizedMetaKeywords;
-        $this->shopAssociation = $shopAssociation;
+        $this->associatedShops = $associatedShops;
         $this->address2 = $address2;
         $this->postCode = $postCode;
         $this->stateId = $stateId;
@@ -506,5 +511,21 @@ class EditSupplierCommand
         $this->dni = $dni;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getZipCode(): int
+    {
+        return $this->zipCode;
+    }
+
+    /**
+     * @param int $zipCode
+     */
+    public function setZipCode(int $zipCode): void
+    {
+        $this->zipCode = $zipCode;
     }
 }

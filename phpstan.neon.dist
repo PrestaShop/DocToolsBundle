@@ -4,3 +4,4 @@ parameters:
 		- .github/workflows/autoload.php
 	paths:
 		- src
+		- Tests

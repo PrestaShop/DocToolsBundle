@@ -310,7 +310,7 @@ class CommandHandlerDefinitionParserTest extends TestCase
             'string[] $localizedMetaTitles',
             'string[] $localizedMetaDescriptions',
             'array $localizedMetaKeywords',
-            'array $shopAssociation',
+            'array $associatedShops',
             '?string $address2 = NULL',
             '?string $postCode = NULL',
             '?int $stateId = NULL',
