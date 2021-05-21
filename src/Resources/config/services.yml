@@ -38,6 +38,7 @@ services:
     class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser'
     arguments:
       - '@prestashop.doc_tools.command_bus.parser.regexp_domain_parser'
+      - '@prestashop.doc_tools.util.string.string_modifier'
 
   prestashop.doc_tools.command_bus.parser.regexp_domain_parser:
     class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser'

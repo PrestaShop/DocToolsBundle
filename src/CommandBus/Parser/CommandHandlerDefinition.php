@@ -74,6 +74,16 @@ class CommandHandlerDefinition
     private $domain;
 
     /**
+     * @var string
+     */
+    private $simpleCommandClass;
+
+    /**
+     * @var string
+     */
+    private $slugName;
+
+    /**
      * @param string $type command or query
      * @param string $domain
      * @param string $handlerClass
@@ -82,6 +92,8 @@ class CommandHandlerDefinition
      * @param string $description
      * @param string|null $returnType
      * @param array $handlerInterfaces
+     * @param string $simpleCommandClass
+     * @param string $slugName
      */
     public function __construct(
         string $type,
@@ -91,7 +103,9 @@ class CommandHandlerDefinition
         array $commandConstructorParams,
         string $description,
         ?string $returnType,
-        array $handlerInterfaces
+        array $handlerInterfaces,
+        string $simpleCommandClass,
+        string $slugName
     ) {
         $this->type = $type;
         $this->domain = $domain;
@@ -101,6 +115,8 @@ class CommandHandlerDefinition
         $this->returnType = $returnType;
         $this->description = $description;
         $this->handlerInterfaces = $handlerInterfaces;
+        $this->simpleCommandClass = $simpleCommandClass;
+        $this->slugName = $slugName;
     }
 
     /**
@@ -136,14 +152,6 @@ class CommandHandlerDefinition
     }
 
     /**
-     * @return string
-     */
-    public function getSimpleCommandClass(): string
-    {
-        return substr($this->getCommandClass(), strrpos($this->getCommandClass(), '\\') + 1);
-    }
-
-    /**
      * @return array
      */
     public function getCommandConstructorParams(): array
@@ -173,5 +181,21 @@ class CommandHandlerDefinition
     public function getHandlerInterfaces(): array
     {
         return $this->handlerInterfaces;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSimpleCommandClass(): string
+    {
+        return $this->simpleCommandClass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlugName(): string
+    {
+        return $this->slugName;
     }
 }

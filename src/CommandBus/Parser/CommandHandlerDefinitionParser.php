@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace PrestaShop\DocToolsBundle\CommandBus\Parser;
 
+use PrestaShop\DocToolsBundle\Util\String\StringModifier;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -43,10 +44,21 @@ class CommandHandlerDefinitionParser
      */
     private $domainParser;
 
+    /**
+     * @var StringModifier
+     */
+    private $stringModifier;
+
+    /**
+     * @param DomainParserInterface $domainParser
+     * @param StringModifier $stringModifier
+     */
     public function __construct(
-        DomainParserInterface $domainParser
+        DomainParserInterface $domainParser,
+        StringModifier $stringModifier
     ) {
         $this->domainParser = $domainParser;
+        $this->stringModifier = $stringModifier;
     }
 
     /**
@@ -59,6 +71,8 @@ class CommandHandlerDefinitionParser
     {
         $commandReflection = new ReflectionClass($commandClass);
         $handlerReflection = new ReflectionClass($handlerClass);
+        $simpleClass = substr($commandClass, strrpos($commandClass, '\\') + 1);
+        $slugName = $this->stringModifier->convertCamelCaseToKebabCase($simpleClass);
 
         return new CommandHandlerDefinition(
             $this->parseType($commandClass),
@@ -68,7 +82,9 @@ class CommandHandlerDefinitionParser
             $this->parseCommandConstructorParams($commandReflection),
             $this->parseDescription($commandReflection),
             $this->parseReturnType($handlerReflection),
-            $handlerReflection->getInterfaceNames()
+            $handlerReflection->getInterfaceNames(),
+            $simpleClass,
+            $slugName
         );
     }
 

@@ -33,6 +33,7 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser;
+use PrestaShop\DocToolsBundle\Util\String\StringModifier;
 use ReflectionException;
 use Tests\Resources\Domain\Manufacturer\Command\AddManufacturerCommand;
 use Tests\Resources\Domain\Manufacturer\Command\EditManufacturerCommand;
@@ -70,7 +71,8 @@ class CommandHandlerDefinitionParserTest extends TestCase
     {
         parent::setUp();
         $this->parser = new CommandHandlerDefinitionParser(
-            new RegexpDomainParser(RegexpDomainParser::TEST_DOMAIN_REGEXP)
+            new RegexpDomainParser(RegexpDomainParser::TEST_DOMAIN_REGEXP),
+            new StringModifier()
         );
     }
 
@@ -320,5 +322,47 @@ class CommandHandlerDefinitionParserTest extends TestCase
             '?string $dni = NULL',
             '?int $zipCode = 0',
         ]];
+    }
+
+    /**
+     * @dataProvider getDataForSimpleClassName
+     *
+     * @param string $handler
+     * @param string $command
+     * @param string $expectedSimpleClassName
+     */
+    public function testSimpleClassName(string $handler, string $command, string $expectedSimpleClassName): void
+    {
+        $definition = $this->parser->parseDefinition($handler, $command);
+
+        Assert::assertEquals($expectedSimpleClassName, $definition->getSimpleCommandClass());
+    }
+
+    public function getDataForSimpleClassName(): Generator
+    {
+        yield [AddTaxHandler::class, AddTaxCommand::class, 'AddTaxCommand'];
+        yield [EditTaxHandler::class, EditTaxCommand::class, 'EditTaxCommand'];
+        yield [GetTaxForEditingHandler::class, GetTaxForEditing::class, 'GetTaxForEditing'];
+    }
+
+    /**
+     * @dataProvider getDataForSlugName
+     *
+     * @param string $handler
+     * @param string $command
+     * @param string $expectedSlugName
+     */
+    public function testSlugClassName(string $handler, string $command, string $expectedSlugName): void
+    {
+        $definition = $this->parser->parseDefinition($handler, $command);
+
+        Assert::assertEquals($expectedSlugName, $definition->getSlugName());
+    }
+
+    public function getDataForSlugName(): Generator
+    {
+        yield [AddTaxHandler::class, AddTaxCommand::class, 'add-tax-command'];
+        yield [EditTaxHandler::class, EditTaxCommand::class, 'edit-tax-command'];
+        yield [GetTaxForEditingHandler::class, GetTaxForEditing::class, 'get-tax-for-editing'];
     }
 }

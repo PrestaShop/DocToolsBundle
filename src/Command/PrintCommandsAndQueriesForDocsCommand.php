@@ -200,7 +200,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
             $docsPath = rtrim($this->defaultDocsFolder, '/');
         }
 
-        $destinationPath = $docsPath  . '/' . ltrim($this->internalCQRSFolder, '/');
+        $destinationPath = $docsPath . '/' . ltrim($this->internalCQRSFolder, '/');
         if (!$this->filesystem->isAbsolutePath($destinationPath)) {
             throw new InvalidOptionException(sprintf(
                 'Desination path %s invalid it must be an absolute path to a destination directory',

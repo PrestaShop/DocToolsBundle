@@ -283,7 +283,9 @@ class CommandHandlerCollectionTest extends TestCase
             [],
             '',
             '',
-            []
+            [],
+            '',
+            ''
         );
     }
 
