@@ -108,13 +108,13 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             [
                 '_index.md',
                 'manufacturer/_index.md',
-                'manufacturer/partials/get-manufacturer-for-editing.md',
-                'manufacturer/partials/add-manufacturer-command.md',
-                'manufacturer/partials/edit-manufacturer-command.md',
+                'manufacturer/_partials/get-manufacturer-for-editing.md',
+                'manufacturer/_partials/add-manufacturer-command.md',
+                'manufacturer/_partials/edit-manufacturer-command.md',
                 'tax/_index.md',
-                'tax/partials/get-tax-for-editing.md',
-                'tax/partials/add-tax-command.md',
-                'tax/partials/edit-tax-command.md',
+                'tax/_partials/get-tax-for-editing.md',
+                'tax/_partials/add-tax-command.md',
+                'tax/_partials/edit-tax-command.md',
             ],
         ];
     }
@@ -172,20 +172,20 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             ],
             [
                 '_index.md',
-                'manufacturer/partials/get-manufacturer-for-editing.md',
-                'manufacturer/partials/edit-manufacturer-command.md',
+                'manufacturer/_partials/get-manufacturer-for-editing.md',
+                'manufacturer/_partials/edit-manufacturer-command.md',
                 'tax/_index.md',
             ],
             [
                 '_index.md',
                 'manufacturer/_index.md',
-                'manufacturer/partials/get-manufacturer-for-editing.md',
-                'manufacturer/partials/add-manufacturer-command.md',
-                'manufacturer/partials/edit-manufacturer-command.md',
+                'manufacturer/_partials/get-manufacturer-for-editing.md',
+                'manufacturer/_partials/add-manufacturer-command.md',
+                'manufacturer/_partials/edit-manufacturer-command.md',
                 'tax/_index.md',
-                'tax/partials/get-tax-for-editing.md',
-                'tax/partials/add-tax-command.md',
-                'tax/partials/edit-tax-command.md',
+                'tax/_partials/get-tax-for-editing.md',
+                'tax/_partials/add-tax-command.md',
+                'tax/_partials/edit-tax-command.md',
             ],
         ];
 
@@ -205,13 +205,13 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             [
                 '_index.md',
                 'manufacturer/_index.md',
-                'manufacturer/partials/get-manufacturer-for-editing.md',
-                'manufacturer/partials/add-manufacturer-command.md',
-                'manufacturer/partials/edit-manufacturer-command.md',
+                'manufacturer/_partials/get-manufacturer-for-editing.md',
+                'manufacturer/_partials/add-manufacturer-command.md',
+                'manufacturer/_partials/edit-manufacturer-command.md',
                 'tax/_index.md',
-                'tax/partials/get-tax-for-editing.md',
-                'tax/partials/add-tax-command.md',
-                'tax/partials/edit-tax-command.md',
+                'tax/_partials/get-tax-for-editing.md',
+                'tax/_partials/add-tax-command.md',
+                'tax/_partials/edit-tax-command.md',
             ],
         ];
 
@@ -230,13 +230,13 @@ class CommandDefinitionPrinterTest extends KernelTestCase
             [
                 '_index.md',
                 'manufacturer/_index.md',
-                'manufacturer/partials/get-manufacturer-for-editing.md',
-                'manufacturer/partials/add-manufacturer-command.md',
-                'manufacturer/partials/edit-manufacturer-command.md',
+                'manufacturer/_partials/get-manufacturer-for-editing.md',
+                'manufacturer/_partials/add-manufacturer-command.md',
+                'manufacturer/_partials/edit-manufacturer-command.md',
                 'tax/_index.md',
-                'tax/partials/get-tax-for-editing.md',
-                'tax/partials/add-tax-command.md',
-                'tax/partials/edit-tax-command.md',
+                'tax/_partials/get-tax-for-editing.md',
+                'tax/_partials/add-tax-command.md',
+                'tax/_partials/edit-tax-command.md',
             ],
         ];
     }
