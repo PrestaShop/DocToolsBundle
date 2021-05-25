@@ -36,8 +36,10 @@ use ReflectionParameter;
 class CommandHandlerDefinitionParser
 {
     private const HANDLER_METHOD_NAME = 'handle';
-    private const RETURN_TAG = '@return';
-    private const PARAM_TAG_REGEXP = '/@param\s*([^ ]*)\s+\$%s\s/';
+    private const RETURN_TAG_REGEXP = '/@return\s+([^\s]+)\s/';
+    private const PARAM_TAG_REGEXP = '/@param\s+([^\s]+)\s+\$%s\s/';
+    private const USE_STATEMENTS_REGEXP = '/use\s+([^\s]+\\\\%s)\s*;/';
+    private const IS_ARRAY_REGEXP = '/([^\s]+)\[\]$/';
 
     /**
      * @var DomainParserInterface
@@ -137,15 +139,17 @@ class CommandHandlerDefinitionParser
     {
         $method = $handlerReflection->getMethod(self::HANDLER_METHOD_NAME);
 
+        $interfaceReflection = null;
         foreach ($handlerReflection->getInterfaces() as $interface) {
             if ($interface->hasMethod(self::HANDLER_METHOD_NAME)) {
+                $interfaceReflection = $interface;
                 $method = $interface->getMethod(self::HANDLER_METHOD_NAME);
                 break;
             }
         }
 
         if ($returnType = $this->parseReturnTypeFromDocblock($method)) {
-            return $returnType;
+            return $this->getFullyQualifiedClassName($returnType, $handlerReflection, $interfaceReflection);
         }
 
         if ($method->hasReturnType()) {
@@ -154,6 +158,48 @@ class CommandHandlerDefinitionParser
         }
 
         return 'void';
+    }
+
+    /**
+     * @param string $returnType
+     * @param ReflectionClass $handlerReflection
+     *
+     * @return string
+     */
+    private function getFullyQualifiedClassName(string $returnType, ReflectionClass $handlerReflection, ReflectionClass $interfaceReflection): string
+    {
+        $isArray = false;
+        if (preg_match(self::IS_ARRAY_REGEXP, $returnType, $matches)) {
+            $isArray = true;
+            $returnType = count($matches) > 1 ? $matches[1] : $returnType;
+        }
+
+        if ($fullName = $this->searchFullNameFromUseStatements($handlerReflection, $returnType)) {
+            return $fullName . ($isArray ? '[]' : '');
+        } elseif ($fullName = $this->searchFullNameFromUseStatements($interfaceReflection, $returnType)) {
+            return $fullName . ($isArray ? '[]' : '');
+        }
+
+        return $returnType . ($isArray ? '[]' : '');
+    }
+
+    /**
+     * @param ReflectionClass $reflectionClass
+     * @param string $returnType
+     *
+     * @return string|null
+     */
+    private function searchFullNameFromUseStatements(ReflectionClass $reflectionClass, string $returnType): ?string
+    {
+        $fileName = $reflectionClass->getFileName();
+        $fileCode = file_get_contents($fileName);
+        $regexp = sprintf(self::USE_STATEMENTS_REGEXP, $returnType);
+        preg_match($regexp, $fileCode, $matches);
+        if (count($matches) > 1) {
+            return $matches[1];
+        }
+
+        return null;
     }
 
     /**
@@ -168,13 +214,9 @@ class CommandHandlerDefinitionParser
             return null;
         }
 
-        $tagPosition = strpos($docBlock, self::RETURN_TAG);
-
-        if (false !== $tagPosition) {
-            $returnType = substr($docBlock, $tagPosition, (strpos($docBlock, PHP_EOL, $tagPosition)) - $tagPosition);
-            $returnType = str_replace(sprintf('%s ', self::RETURN_TAG), '', $returnType);
-
-            return $returnType;
+        preg_match(self::RETURN_TAG_REGEXP, $docBlock, $matches);
+        if (count($matches) > 1) {
+            return $matches[1];
         }
 
         return null;

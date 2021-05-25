@@ -7,11 +7,11 @@ title: {{ domain }} domain
 ### {{ domain }} Commands
 
 {% for definition in domainDefinitions.command %}
-{{ '{{' }} partial "{{ partialFolder }}/{{ definition.slugName }}.md" . {{ '}}' }}
+{{ '{{% ' }} include-md "{{ partialFolder }}/{{ definition.slugName }}.md" {{ '%}}' }}
 {% endfor %}
 
 ### {{ domain }} Queries
 
 {% for definition in domainDefinitions.query %}
-{{ '{{' }} partial "{{ partialFolder }}/{{ definition.slugName }}.md" . {{ '}}' }}
+{{ '{{% ' }} include-md "{{ partialFolder }}/{{ definition.slugName }}.md" {{ '%}}' }}
 {% endfor %}

@@ -7,4 +7,4 @@ _{{ definition.description }}_
 | -------------------------- | -- |
 | **Constructor parameters** | <ul>{% for argument in definition.commandConstructorParams%} <li>`${{ argument }}`</li> {% endfor%}</ul> |
 | **Handler class**          | `{{ definition.handlerClass }}` {% if definition.handlerInterfaces is not empty %} <p> Implements: </p> <ul> {% for interface in definition.handlerInterfaces %} <li>`{{ interface }}`</li> {% endfor%}{% endif%} |
-| **Return type** | {% if definition.returnType %} {{ definition.returnType }} {% else %} not defined {% endif %} |
+| **Return type** | {% if definition.returnType %} `{{ definition.returnType }}` {% else %} not defined {% endif %} |

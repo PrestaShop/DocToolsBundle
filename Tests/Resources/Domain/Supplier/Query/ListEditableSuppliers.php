@@ -26,28 +26,8 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\DocToolsBundle\DependencyInjection;
+namespace Tests\Resources\Domain\Supplier\Query;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
-
-class Configuration implements ConfigurationInterface
+class ListEditableSuppliers
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigTreeBuilder()
-    {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('doc_tools');
-
-        $rootNode
-            ->children()
-                ->scalarNode('docs_src_path')->defaultNull()->end()
-                ->scalarNode('cqrs_folder')->defaultValue('content/1.7/development/architecture/domain/references')->end()
-            ->end()
-        ;
-
-        return $treeBuilder;
-    }
 }

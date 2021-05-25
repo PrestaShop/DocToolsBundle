@@ -44,10 +44,24 @@ use Tests\Resources\Domain\Manufacturer\CommandHandler\EditManufacturerHandlerIn
 use Tests\Resources\Domain\Manufacturer\Query\GetManufacturerForEditing;
 use Tests\Resources\Domain\Manufacturer\QueryHandler\GetManufacturerForEditingHandler;
 use Tests\Resources\Domain\Manufacturer\QueryHandler\GetManufacturerForEditingHandlerInterface;
+use Tests\Resources\Domain\Manufacturer\QueryResult\EditableManufacturer;
+use Tests\Resources\Domain\Manufacturer\ValueObject\ManufacturerId;
 use Tests\Resources\Domain\Supplier\Command\AddSupplierCommand;
 use Tests\Resources\Domain\Supplier\Command\EditSupplierCommand;
 use Tests\Resources\Domain\Supplier\CommandHandler\AddSupplierHandler;
 use Tests\Resources\Domain\Supplier\CommandHandler\EditSupplierHandler;
+use Tests\Resources\Domain\Supplier\Query\GetSupplierForEditing;
+use Tests\Resources\Domain\Supplier\Query\GetSupplierForPreview;
+use Tests\Resources\Domain\Supplier\Query\GetSupplierNames;
+use Tests\Resources\Domain\Supplier\Query\IsSupplierEnabled;
+use Tests\Resources\Domain\Supplier\Query\ListEditableSuppliers;
+use Tests\Resources\Domain\Supplier\QueryHandler\GetSupplierForEditingHandler;
+use Tests\Resources\Domain\Supplier\QueryHandler\GetSupplierForPreviewHandler;
+use Tests\Resources\Domain\Supplier\QueryHandler\GetSupplierNamesHandler;
+use Tests\Resources\Domain\Supplier\QueryHandler\IsSupplierEnabledHandler;
+use Tests\Resources\Domain\Supplier\QueryHandler\ListEditableSuppliersHandler;
+use Tests\Resources\Domain\Supplier\QueryResult\EditableSupplier;
+use Tests\Resources\Domain\Supplier\QueryResult\SupplierForPreview;
 use Tests\Resources\Domain\Tax\Command\AddTaxCommand;
 use Tests\Resources\Domain\Tax\Command\EditTaxCommand;
 use Tests\Resources\Domain\Tax\CommandHandler\AddTaxHandler;
@@ -239,8 +253,26 @@ class CommandHandlerDefinitionParserTest extends TestCase
 
         // PHPDoc typing and inherited doc
         yield [EditManufacturerHandler::class, EditManufacturerCommand::class, 'void'];
-        yield [AddManufacturerHandler::class, AddManufacturerCommand::class, 'ManufacturerId'];
-        yield [GetManufacturerForEditingHandler::class, GetManufacturerForEditing::class, 'EditableManufacturer'];
+        yield [AddManufacturerHandler::class, AddManufacturerCommand::class, ManufacturerId::class];
+        yield [GetManufacturerForEditingHandler::class, GetManufacturerForEditing::class, EditableManufacturer::class];
+
+        // Mix of strong and PHPDoc typing
+        yield [EditSupplierHandler::class, EditSupplierCommand::class, 'mixed']; // Not ideal but it is what the PHPDoc indicates
+        yield [AddSupplierHandler::class, AddSupplierCommand::class, 'mixed']; // Not ideal but it is what the PHPDoc indicates
+        yield [GetSupplierForEditingHandler::class, GetSupplierForEditing::class, EditableSupplier::class];
+
+        // Avoid bug when query result and query name are too close
+        yield [GetSupplierForPreviewHandler::class, GetSupplierForPreview::class, SupplierForPreview::class];
+
+        // PHPDoc contains comment after return type
+        yield [IsSupplierEnabledHandler::class, IsSupplierEnabled::class, 'bool'];
+
+        // Returns string[] that can mess with regexp if not handled correctly
+        yield [GetSupplierNamesHandler::class, GetSupplierNames::class, 'string[]'];
+
+        // Returns EditableSupplier[] that can mess with regexp if not handled correctly, besides the handler does not
+        // have the use statement only the interface has
+        yield [ListEditableSuppliersHandler::class, ListEditableSuppliers::class, EditableSupplier::class . '[]'];
     }
 
     /**

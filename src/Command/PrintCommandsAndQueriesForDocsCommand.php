@@ -35,7 +35,6 @@ use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -110,7 +109,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     {
         $description = 'Prints available CQRS commands and queries to a file prepared for documentation';
         $example = sprintf(
-            'Example: php ./bin/console %s --dir=/path/to/doc_project/src/content/1.7/development/architecture/domain/references',
+            'Example: php ./bin/console %s --dir=/path/to/doc_project/src',
             self::$defaultName
         );
         $this
@@ -141,45 +140,18 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     {
         $destinationDir = $this->getDestinationDir($input);
 
-        if (!$this->confirmExistingFileWillBeLost($destinationDir, $input, $output)) {
-            $output->writeln('<comment>Cancelled</comment>');
-
-            return null;
+        $force = $input->getOption(self::FORCE_OPTION_NAME);
+        if ($force) {
+            $output->writeln('<comment>Force erasing existing files</comment>');
         }
 
         $handlerAssociations = $this->getContainer()->getParameter('doc_tools.commands_and_queries');
         $definitions = $this->handlerDefinitionCollection->getDefinitionsByDomain($handlerAssociations);
-
-        $force = $input->getOption(self::FORCE_OPTION_NAME);
         $this->commandDefinitionPrinter->printDefinitionsDocumentation($definitions, $destinationDir, $force);
 
-        $output->writeln(sprintf('<info>dumped commands & queries to %s</info>', $destinationDir));
+        $output->writeln(sprintf('<info>Dumped commands & queries to %s</info>', $destinationDir));
 
         return 0;
-    }
-
-    /**
-     * @param string $targetDir
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return bool
-     */
-    private function confirmExistingFileWillBeLost(string $targetDir, InputInterface $input, OutputInterface $output): bool
-    {
-        $force = $input->getOption(self::FORCE_OPTION_NAME);
-
-        if (null === $force || !$this->filesystem->exists($targetDir)) {
-            return true;
-        }
-
-        $helper = $this->getHelper('question');
-        $confirmation = new ConfirmationQuestion(sprintf(
-            '<question>All data in directory "%s" will be lost. Proceed?</question>',
-            $targetDir
-        ));
-
-        return (bool) $helper->ask($input, $output, $confirmation);
     }
 
     /**
@@ -203,7 +175,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
         $destinationPath = $docsPath . '/' . ltrim($this->internalCQRSFolder, '/');
         if (!$this->filesystem->isAbsolutePath($destinationPath)) {
             throw new InvalidOptionException(sprintf(
-                'Desination path %s invalid it must be an absolute path to a destination directory',
+                'Destination path %s invalid it must be an absolute path to a destination directory',
                 $destinationPath
             ));
         }

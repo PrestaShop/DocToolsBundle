@@ -124,9 +124,9 @@ class CommandDefinitionPrinter
         }
 
         if ($definition->getType() === CommandHandlerDefinition::TYPE_QUERY) {
-            $templatePath = '@PrestaShopDocTools/Commands/CQRS/cqrs-command.md.twig';
-        } else {
             $templatePath = '@PrestaShopDocTools/Commands/CQRS/cqrs-query.md.twig';
+        } else {
+            $templatePath = '@PrestaShopDocTools/Commands/CQRS/cqrs-command.md.twig';
         }
 
         $content = $this->twig->render($templatePath, [
@@ -152,7 +152,7 @@ class CommandDefinitionPrinter
         $content = $this->twig->render('@PrestaShopDocTools/Commands/CQRS/cqrs-domain.md.twig', [
             'domain' => $domain,
             'domainDefinitions' => $domainDefinitions,
-            'partialFolder' => $this->cqrsFolder . '/partials',
+            'partialFolder' => $this->getPartialFolderPath($domain),
         ]);
 
         $this->filesystem->dumpFile($domainFilePath, $content);
@@ -184,6 +184,20 @@ class CommandDefinitionPrinter
         return sprintf(
             '%s/%s/_index.md',
             $this->destinationDir,
+            $this->stringModifier->convertCamelCaseToKebabCase($domain)
+        );
+    }
+
+    /**
+     * @param string $domain
+     *
+     * @return string
+     */
+    private function getPartialFolderPath(string $domain): string
+    {
+        return sprintf(
+            '%s/%s/partials',
+            $this->cqrsFolder,
             $this->stringModifier->convertCamelCaseToKebabCase($domain)
         );
     }

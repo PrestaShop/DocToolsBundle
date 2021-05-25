@@ -26,28 +26,17 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\DocToolsBundle\DependencyInjection;
+namespace Tests\Resources\Domain\Supplier\QueryHandler;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Tests\Resources\Domain\Supplier\Query\IsSupplierEnabled;
 
-class Configuration implements ConfigurationInterface
+class IsSupplierEnabledHandler implements IsSupplierEnabledHandlerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getConfigTreeBuilder()
+    public function handle(IsSupplierEnabled $query)
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('doc_tools');
-
-        $rootNode
-            ->children()
-                ->scalarNode('docs_src_path')->defaultNull()->end()
-                ->scalarNode('cqrs_folder')->defaultValue('content/1.7/development/architecture/domain/references')->end()
-            ->end()
-        ;
-
-        return $treeBuilder;
+        return true;
     }
 }

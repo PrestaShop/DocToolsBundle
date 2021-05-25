@@ -58,8 +58,8 @@ $ composer require prestashop/doc-tools-bundle
 ```yml
 # app/config/config.yml
 doc_tools:
-  docs_path: /root/path/to/docs/project
-  cqrs_folder: src/content/1.7/development/architecture/domain/references
+  docs_src_path: /root/path/to/docs/project/src
+  cqrs_folder: content/1.7/development/architecture/domain/references
 ```
 
 4. **How to use**
@@ -78,13 +78,13 @@ prestashop
 
 ### prestashop:doc-tools:print-commands-and-queries
 
-When you generate CQRS commands documentation details you should export them into the `src/content/1.7/development/architecture/domain/references` folder of the Docs project.
+When you generate CQRS commands documentation details you should export them into the `content/1.7/development/architecture/domain/references` folder of the Docs project.
 
 ```bash
-php ./bin/console prestashop:doc-tools:print-commands-and-queries --dir=/path/to/doc_project/src/content/1.7/development/architecture/domain/references
+php ./bin/console prestashop:doc-tools:print-commands-and-queries --dir=/path/to/doc_project/src
 ```
 
-Or if you correctly set the `docs_path` config you can simply run:
+Or if you correctly set the `docs_src_path` config you can simply run:
 
 ```bash
 php ./bin/console prestashop:doc-tools:print-commands-and-queries

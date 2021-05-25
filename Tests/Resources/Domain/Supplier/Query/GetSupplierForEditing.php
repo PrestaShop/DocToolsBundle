@@ -26,28 +26,30 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\DocToolsBundle\DependencyInjection;
+namespace Tests\Resources\Domain\Supplier\Query;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Tests\Resources\Domain\Supplier\ValueObject\SupplierId;
 
-class Configuration implements ConfigurationInterface
+class GetSupplierForEditing
 {
     /**
-     * {@inheritdoc}
+     * @var SupplierId
      */
-    public function getConfigTreeBuilder()
+    private $supplierId;
+
+    /**
+     * @param int $supplierId
+     */
+    public function __construct(int $supplierId)
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('doc_tools');
+        $this->supplierId = new SupplierId($supplierId);
+    }
 
-        $rootNode
-            ->children()
-                ->scalarNode('docs_src_path')->defaultNull()->end()
-                ->scalarNode('cqrs_folder')->defaultValue('content/1.7/development/architecture/domain/references')->end()
-            ->end()
-        ;
-
-        return $treeBuilder;
+    /**
+     * @return SupplierId $supplierId
+     */
+    public function getSupplierId(): SupplierId
+    {
+        return $this->supplierId;
     }
 }
