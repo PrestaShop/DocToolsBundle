@@ -182,7 +182,7 @@ class CommandDefinitionPrinter
     private function getDomainFilePath(string $domain): string
     {
         return sprintf(
-            '%s/%s/_index.md',
+            '%s/%s/index.md',
             $this->destinationDir,
             $this->stringModifier->convertCamelCaseToKebabCase($domain)
         );
