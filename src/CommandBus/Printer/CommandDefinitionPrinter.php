@@ -167,7 +167,7 @@ class CommandDefinitionPrinter
     private function getDefinitionFilePath(CommandHandlerDefinition $definition, string $domain): string
     {
         return sprintf(
-            '%s/%s/partials/%s.md',
+            '%s/%s/_partials/%s.md',
             $this->destinationDir,
             $this->stringModifier->convertCamelCaseToKebabCase($domain),
             $this->stringModifier->convertCamelCaseToKebabCase($definition->getSimpleCommandClass())
@@ -196,7 +196,7 @@ class CommandDefinitionPrinter
     private function getPartialFolderPath(string $domain): string
     {
         return sprintf(
-            '%s/%s/partials',
+            '%s/%s/_partials',
             $this->cqrsFolder,
             $this->stringModifier->convertCamelCaseToKebabCase($domain)
         );
