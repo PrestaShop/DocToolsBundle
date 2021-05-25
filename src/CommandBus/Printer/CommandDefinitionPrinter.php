@@ -152,7 +152,7 @@ class CommandDefinitionPrinter
         $content = $this->twig->render('@PrestaShopDocTools/Commands/CQRS/cqrs-domain.md.twig', [
             'domain' => $domain,
             'domainDefinitions' => $domainDefinitions,
-            'partialFolder' => $this->getPartialFolderPath($domain),
+            'partialFolder' => $this->getDomainInternalPath($domain),
         ]);
 
         $this->filesystem->dumpFile($domainFilePath, $content);
@@ -167,10 +167,37 @@ class CommandDefinitionPrinter
     private function getDefinitionFilePath(CommandHandlerDefinition $definition, string $domain): string
     {
         return sprintf(
-            '%s/%s/_partials/%s.md',
-            $this->destinationDir,
-            $this->stringModifier->convertCamelCaseToKebabCase($domain),
+            '%s/%s.md',
+            $this->getDomainAbsolutePath($domain),
             $this->stringModifier->convertCamelCaseToKebabCase($definition->getSimpleCommandClass())
+        );
+    }
+
+    /**
+     * @param string $domain
+     *
+     * @return string
+     */
+    private function getDomainAbsolutePath(string $domain): string
+    {
+        return sprintf(
+            '%s/%s',
+            $this->destinationDir,
+            $this->stringModifier->convertCamelCaseToKebabCase($domain)
+        );
+    }
+
+    /**
+     * @param string $domain
+     *
+     * @return string
+     */
+    private function getDomainInternalPath(string $domain): string
+    {
+        return sprintf(
+            '%s/%s',
+            $this->cqrsFolder,
+            $this->stringModifier->convertCamelCaseToKebabCase($domain)
         );
     }
 
@@ -182,9 +209,8 @@ class CommandDefinitionPrinter
     private function getDomainFilePath(string $domain): string
     {
         return sprintf(
-            '%s/%s/_index.md',
-            $this->destinationDir,
-            $this->stringModifier->convertCamelCaseToKebabCase($domain)
+            '%s/_index.md',
+            $this->getDomainAbsolutePath($domain)
         );
     }
 
