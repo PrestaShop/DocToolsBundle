@@ -15,7 +15,7 @@
     },
     {
       "name": "PrestaShop Community",
-      "homepage": "http://contributors.prestashop.com/"
+      "homepage": "https://contributors.prestashop.com/"
     }
   ],
   "config": {
@@ -46,6 +46,10 @@
     "phpstan/phpstan": "^0.12.48"
   },
   "scripts": {
+    "test-all": [
+      "@composer unit-tests",
+      "@composer integration-tests"
+    ],
     "unit-tests": [
       "@php -d date.timezone=UTC ./vendor/bin/phpunit -c Tests/Unit/phpunit.xml"
     ],

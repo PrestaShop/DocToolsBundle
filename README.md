@@ -89,3 +89,22 @@ Or if you correctly set the `docs_src_path` config you can simply run:
 ```bash
 php ./bin/console prestashop:doc-tools:print-commands-and-queries
 ```
+
+5. **How to test**
+
+This bundle includes automatic tests which are run automatically by Google actions. You can run them locally by using:
+
+Unit tests:
+```bash
+composer run unit-tests
+```
+
+Integration tests:
+```bash
+composer run integration-tests
+```
+
+Test all:
+```bash
+composer run test-all
+```
