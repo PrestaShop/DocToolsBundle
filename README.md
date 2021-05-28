@@ -92,7 +92,7 @@ php ./bin/console prestashop:doc-tools:print-commands-and-queries
 
 5. **How to test**
 
-This bundle includes automatic tests which are run automatically by Google actions. You can run them locally by using:
+This bundle includes automatic tests which are run automatically by GitHub actions. You can run them locally by using:
 
 Unit tests:
 ```bash
