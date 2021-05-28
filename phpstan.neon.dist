@@ -1,0 +1,9 @@
+parameters:
+	level: 4
+	bootstrapFiles:
+		- .github/workflows/autoload.php
+	paths:
+		- src
+		- Tests
+	excludePaths:
+		- src/DependencyInjection/Configuration.php

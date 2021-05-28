@@ -1,0 +1,21 @@
+---
+title: {{ domain }} domain
+---
+
+## {{ domain }} domain
+
+### {{ domain }} Commands
+
+{% for definition in domainDefinitions.command %}
+#### {{ definition.simpleCommandClass }} {id="{{ definition.simpleCommandClass }}"}
+
+{{ '{{% ' }} include-md "{{ partialFolder }}/{{ definition.slugName }}.md" {{ '%}}' }}
+{% endfor %}
+
+### {{ domain }} Queries
+
+{% for definition in domainDefinitions.query %}
+#### {{ definition.simpleCommandClass }} {id="{{ definition.simpleCommandClass }}"}
+
+{{ '{{% ' }} include-md "{{ partialFolder }}/{{ definition.slugName }}.md" {{ '%}}' }}
+{% endfor %}

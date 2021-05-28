@@ -1,0 +1,54 @@
+parameters:
+  regexp_domain_parser: !php/const PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser::CORE_DOMAIN_REGEXP
+
+services:
+  _defaults:
+    public: true
+
+  # Commands
+  prestashop.doc_tools.command.list_commands_and_queries_command:
+    class: PrestaShop\DocToolsBundle\Command\ListCommandsAndQueriesCommand
+    arguments:
+      - '@prestashop.doc_tools.command_bus.parser.command_handler_collection'
+    tags:
+      - console.command
+
+  prestashop.doc_tools.command.print_commands_and_queries_for_docs_command:
+    class: PrestaShop\DocToolsBundle\Command\PrintCommandsAndQueriesForDocsCommand
+    arguments:
+      - '@prestashop.doc_tools.command_bus.parser.command_handler_collection'
+      - '@prestashop.doc_tools.command_bus.printer.command_definition_printer'
+      - '@filesystem'
+      - '%doc_tools.cqrs_folder%'
+      - '%doc_tools.docs_src_path%'
+    tags:
+      - console.command
+
+  # Utils
+  prestashop.doc_tools.util.string.string_modifier:
+    class: PrestaShop\DocToolsBundle\Util\String\StringModifier
+
+  # Command bus
+  prestashop.doc_tools.command_bus.parser.command_handler_collection:
+    class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection'
+    arguments:
+      - '@prestashop.doc_tools.command_bus.parser.command_handler_definition_parser'
+
+  prestashop.doc_tools.command_bus.parser.command_handler_definition_parser:
+    class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser'
+    arguments:
+      - '@prestashop.doc_tools.command_bus.parser.regexp_domain_parser'
+      - '@prestashop.doc_tools.util.string.string_modifier'
+
+  prestashop.doc_tools.command_bus.parser.regexp_domain_parser:
+    class: 'PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser'
+    arguments:
+      - "%regexp_domain_parser%"
+
+  prestashop.doc_tools.command_bus.printer.command_definition_printer:
+    class: 'PrestaShop\DocToolsBundle\CommandBus\Printer\CommandDefinitionPrinter'
+    arguments:
+      - '@filesystem'
+      - '@twig'
+      - '@prestashop.doc_tools.util.string.string_modifier'
+      - '%doc_tools.cqrs_folder%'
