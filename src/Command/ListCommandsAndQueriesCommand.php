@@ -83,10 +83,12 @@ class ListCommandsAndQueriesCommand extends ContainerAwareCommand
                 $interfaces = sprintf('(Implements: %s)', implode(', ', $commandDefinition->getHandlerInterfaces()));
             }
 
+            $returnType = $commandDefinition->getReturnType() ?: 'not defined';
+
             $output->writeln($i++ . '.');
             $output->writeln('<blue>' . ucfirst($commandDefinition->getType()) . ': </blue><info>' . $commandDefinition->getCommandClass() . '</info>');
             $output->writeln('<blue>Handler: </blue><info>' . $commandDefinition->getHandlerClass() . '. ' . $interfaces . '</info>');
-            $output->writeln('<blue>Return type: </blue><info>' . $commandDefinition->getReturnType() ?: 'not defined' . '</info>');
+            $output->writeln('<blue>Return type: </blue><info>' . $returnType . '</info>');
             $output->writeln('<comment>' . $commandDefinition->getDescription() . '</comment>');
             $output->writeln('');
         }
