@@ -10,6 +10,7 @@ services:
     class: PrestaShop\DocToolsBundle\Command\ListCommandsAndQueriesCommand
     arguments:
       - '@prestashop.doc_tools.command_bus.parser.command_handler_collection'
+      - '%doc_tools.commands_and_queries%'
     tags:
       - console.command
 
@@ -21,6 +22,7 @@ services:
       - '@filesystem'
       - '%doc_tools.cqrs_folder%'
       - '%doc_tools.docs_src_path%'
+      - '%doc_tools.commands_and_queries%'
     tags:
       - console.command
 

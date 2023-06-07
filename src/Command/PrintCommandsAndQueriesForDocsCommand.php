@@ -30,7 +30,7 @@ namespace PrestaShop\DocToolsBundle\Command;
 
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection;
 use PrestaShop\DocToolsBundle\CommandBus\Printer\CommandDefinitionPrinter;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,7 +40,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Prints all existing commands and queries to .md file for documentation
  */
-class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
+class PrintCommandsAndQueriesForDocsCommand extends Command
 {
     /**
      * @var string
@@ -58,48 +58,20 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
     private const FORCE_OPTION_NAME = 'force';
 
     /**
-     * @var CommandHandlerCollection
-     */
-    private $handlerDefinitionCollection;
-
-    /**
-     * @var CommandDefinitionPrinter
-     */
-    private $commandDefinitionPrinter;
-
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * @var string
-     */
-    private $internalCQRSFolder;
-
-    /**
-     * @var string
-     */
-    private $defaultDocsFolder;
-
-    /**
      * @param CommandHandlerCollection $handlerDefinitionCollection
      * @param CommandDefinitionPrinter $commandDefinitionPrinter
      * @param Filesystem $filesystem
      */
     public function __construct(
-        CommandHandlerCollection $handlerDefinitionCollection,
-        CommandDefinitionPrinter $commandDefinitionPrinter,
-        Filesystem $filesystem,
-        string $internalCQRSFolder,
-        ?string $defaultDocsFolder
-    ) {
+        private readonly CommandHandlerCollection $handlerDefinitionCollection,
+        private readonly CommandDefinitionPrinter $commandDefinitionPrinter,
+        private readonly Filesystem               $filesystem,
+        private readonly string                   $internalCQRSFolder,
+        private readonly ?string                  $defaultDocsFolder,
+        private readonly array                    $commandsAndQueries,
+    )
+    {
         parent::__construct();
-        $this->handlerDefinitionCollection = $handlerDefinitionCollection;
-        $this->commandDefinitionPrinter = $commandDefinitionPrinter;
-        $this->filesystem = $filesystem;
-        $this->internalCQRSFolder = $internalCQRSFolder;
-        $this->defaultDocsFolder = $defaultDocsFolder;
     }
 
     /**
@@ -126,8 +98,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
                 null,
                 InputOption::VALUE_NONE,
                 'Forces command to be executed without confirmations'
-            )
-        ;
+            );
     }
 
     /**
@@ -145,8 +116,7 @@ class PrintCommandsAndQueriesForDocsCommand extends ContainerAwareCommand
             $output->writeln('<comment>Force erasing existing files</comment>');
         }
 
-        $handlerAssociations = $this->getContainer()->getParameter('doc_tools.commands_and_queries');
-        $definitions = $this->handlerDefinitionCollection->getDefinitionsByDomain($handlerAssociations);
+        $definitions = $this->handlerDefinitionCollection->getDefinitionsByDomain($this->commandsAndQueries);
         $this->commandDefinitionPrinter->printDefinitionsDocumentation($definitions, $destinationDir, $force);
 
         $output->writeln(sprintf('<info>Dumped commands & queries to %s</info>', $destinationDir));
