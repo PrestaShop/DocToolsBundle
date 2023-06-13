@@ -7,7 +7,8 @@ title: {{ domain }} domain
 ### {{ domain }} Commands
 
 {% for definition in domainDefinitions.command %}
-#### {{ definition.simpleCommandClass }} {id="{{ definition.simpleCommandClass }}"}
+
+#### {{ definition.simpleCommandClass }} {{ (definition.minver) ? '{{< minver v="%minver%" >}}'|replace({'%minver%': definition.minver})|raw : '' }} {id="{{ definition.simpleCommandClass }}"}
 
 {{ '{{% ' }} include-md "{{ partialFolder }}/{{ definition.slugName }}.md" {{ '%}}' }}
 {% endfor %}

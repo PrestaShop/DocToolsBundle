@@ -56,6 +56,11 @@ class CommandDefinitionPrinter
     private $cqrsFolder;
 
     /**
+     * @var string
+     */
+    private $partialFolder;
+
+    /**
      * @var bool
      */
     private $forceRefresh;
@@ -75,12 +80,14 @@ class CommandDefinitionPrinter
         Filesystem $filesystem,
         Environment $twig,
         StringModifier $stringModifier,
-        string $cqrsFolder
+        string $cqrsFolder,
+        string $partialFolder
     ) {
         $this->filesystem = $filesystem;
         $this->twig = $twig;
         $this->stringModifier = $stringModifier;
         $this->cqrsFolder = $cqrsFolder;
+        $this->partialFolder = $partialFolder;
     }
 
     public function printDefinitionsDocumentation(
@@ -149,6 +156,15 @@ class CommandDefinitionPrinter
             return;
         }
 
+        foreach ($domainDefinitions as $type => $definitions) {
+            foreach ($definitions as $definition) {
+                $definitionFilePath = $this->getDefinitionFilePath($definition, $domain);
+                if(!$this->filesystem->exists($definitionFilePath)) {
+                    $definition->minver = _PS_VERSION_;
+                }
+            }
+        }
+
         $content = $this->twig->render('@PrestaShopDocTools/Commands/CQRS/cqrs-domain.md.twig', [
             'domain' => $domain,
             'domainDefinitions' => $domainDefinitions,
@@ -197,7 +213,7 @@ class CommandDefinitionPrinter
     {
         return sprintf(
             '%s/%s/_partials',
-            $this->cqrsFolder,
+            $this->partialFolder,
             $this->stringModifier->convertCamelCaseToKebabCase($domain)
         );
     }
