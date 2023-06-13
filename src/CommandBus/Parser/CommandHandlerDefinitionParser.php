@@ -193,9 +193,11 @@ class CommandHandlerDefinitionParser
     {
         $fileName = $reflectionClass->getFileName();
         $fileCode = file_get_contents($fileName);
-        $regexp = sprintf(self::USE_STATEMENTS_REGEXP, $returnType);
+        $regepx = preg_replace('/[\\\\]/', '\\\\\\\\\\\\\\\\', $returnType);
+        $regexp = sprintf(self::USE_STATEMENTS_REGEXP, $regepx);
         preg_match($regexp, $fileCode, $matches);
-        if (count($matches) > 1) {
+
+        if (count($matches) >= 1) {
             return $matches[1];
         }
 
