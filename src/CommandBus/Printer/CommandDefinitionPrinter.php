@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace PrestaShop\DocToolsBundle\CommandBus\Printer;
 
+use _PHPStan_b8e553790\Nette\Neon\Exception;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinition;
 use PrestaShop\DocToolsBundle\Util\String\StringModifier;
 use Symfony\Component\Filesystem\Filesystem;
@@ -159,7 +160,10 @@ class CommandDefinitionPrinter
         foreach ($domainDefinitions as $type => $definitions) {
             foreach ($definitions as $definition) {
                 $definitionFilePath = $this->getDefinitionFilePath($definition, $domain);
-                if(!$this->filesystem->exists($definitionFilePath)) {
+                if (!$this->filesystem->exists($definitionFilePath)) {
+                    if (!defined('_PS_VERSION_')) {
+                        throw new Exception('Please define _PS_VERSION_ constant');
+                    }
                     $definition->minver = _PS_VERSION_;
                 }
             }
