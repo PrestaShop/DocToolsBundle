@@ -38,8 +38,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('doc_tools');
+        $treeBuilder = new TreeBuilder('DocToolsBundle');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
