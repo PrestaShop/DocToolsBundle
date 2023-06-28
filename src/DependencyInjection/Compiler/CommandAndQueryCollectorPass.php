@@ -26,6 +26,10 @@
 
 namespace PrestaShop\DocToolsBundle\DependencyInjection\Compiler;
 
+use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
+use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
+use ReflectionAttribute;
+use ReflectionClass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -50,22 +54,62 @@ class CommandAndQueryCollectorPass implements CompilerPassInterface
     /**
      * Gets command for each provided handler
      *
-     * @param ContainerBuilder $container
-     *
      * @return string[]
      */
-    private function findCommandsAndQueries(ContainerBuilder $container)
+    private function findCommandsAndQueries(ContainerBuilder $container): array
     {
-        $handlers = $container->findTaggedServiceIds('tactician.handler');
-
+        $handlers = $container->findTaggedServiceIds('messenger.message_handler');
         $commands = [];
-        foreach ($handlers as $id => $handler) {
-            $definition = $container->getDefinition($id);
-            if (isset(current($handler)['command'])) {
-                $commands[$definition->getClass()] = current($handler)['command'];
+        $queries = [];
+        foreach ($handlers as $key => $value) {
+            if (count(current($value)) == 0) {
+                continue;
             }
+            
+            $definition = $container->getDefinition($key);
+            $handlerAttributes = $this->getHandlerAttributes($key);
+            $this->processHandlerAttributes($handlerAttributes, $definition->getClass(), $value, $commands, $queries);
         }
 
         return $commands;
+    }
+
+    /**
+     * Get the attributes of a message handler using reflection.
+     *
+     * @return ReflectionAttribute[]
+     */
+    private function getHandlerAttributes(string $handlerClassName): array
+    {
+        $handler = new ReflectionClass($handlerClassName);
+
+        return $handler->getAttributes();
+    }
+
+    /**
+     * Process the handler attributes and add commands and queries to the result.
+     *
+     * @param ReflectionAttribute[] $handlerAttributes
+     * @param string $key
+     * @param array $value
+     * @param string[] $commands
+     * @param string[] $queries
+     *
+     * @return void
+     */
+    private function processHandlerAttributes(array $handlerAttributes, string $key, array $value, array &$commands, array &$queries): void
+    {
+        foreach ($handlerAttributes as $handlerAttribute) {
+            $isCommandHandler = $handlerAttribute->getName() === AsCommandHandler::class;
+            $isQueryHandler = $handlerAttribute->getName() === AsQueryHandler::class;
+
+            if (isset(current($value)['handles'])) {
+                if (($isCommandHandler)) {
+                    $commands[$key] = current($value)['handles'];
+                } elseif ($isQueryHandler) {
+                    $queries[$key] = current($value)['handles'];
+                }
+            }
+        }
     }
 }
