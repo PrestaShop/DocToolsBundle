@@ -28,7 +28,6 @@ declare(strict_types=1);
 
 namespace Tests\Integration\CommandBus\Printer;
 
-use Generator;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection;
 use PrestaShop\DocToolsBundle\CommandBus\Printer\CommandDefinitionPrinter;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -94,7 +93,7 @@ class CommandDefinitionPrinterTest extends KernelTestCase
         }
     }
 
-    public function getPrintData(): Generator
+    public function getPrintData(): \Generator
     {
         yield [
             [
@@ -159,7 +158,7 @@ class CommandDefinitionPrinterTest extends KernelTestCase
         }
     }
 
-    public function getPrintReplaceData(): Generator
+    public function getPrintReplaceData(): \Generator
     {
         yield [
             [

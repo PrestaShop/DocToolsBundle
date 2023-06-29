@@ -7,3 +7,6 @@ parameters:
 		- Tests
 	excludePaths:
 		- src/DependencyInjection/Configuration.php
+	ignoreErrors:
+		- '#^Class PrestaShop\\PrestaShop\\Core\\CommandBus\\Attributes\\AsCommandHandler not found#'
+		- '#^Class PrestaShop\\PrestaShop\\Core\\CommandBus\\Attributes\\AsQueryHandler not found#'

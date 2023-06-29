@@ -65,12 +65,11 @@ class PrintCommandsAndQueriesForDocsCommand extends Command
     public function __construct(
         private readonly CommandHandlerCollection $handlerDefinitionCollection,
         private readonly CommandDefinitionPrinter $commandDefinitionPrinter,
-        private readonly Filesystem               $filesystem,
-        private readonly string                   $internalCQRSFolder,
-        private readonly ?string                  $defaultDocsFolder,
-        private readonly array                    $commandsAndQueries,
-    )
-    {
+        private readonly Filesystem $filesystem,
+        private readonly string $internalCQRSFolder,
+        private readonly ?string $defaultDocsFolder,
+        private readonly array $commandsAndQueries,
+    ) {
         parent::__construct();
     }
 

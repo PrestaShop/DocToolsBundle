@@ -28,13 +28,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\CommandBus\Parser;
 
-use Generator;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinitionParser;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\RegexpDomainParser;
 use PrestaShop\DocToolsBundle\Util\String\StringModifier;
-use ReflectionException;
 use Tests\Resources\Domain\Manufacturer\Command\AddManufacturerCommand;
 use Tests\Resources\Domain\Manufacturer\Command\EditManufacturerCommand;
 use Tests\Resources\Domain\Manufacturer\CommandHandler\AddManufacturerHandler;
@@ -104,9 +102,9 @@ class CommandHandlerDefinitionParserTest extends TestCase
     }
 
     /**
-     * @return Generator
+     * @return \Generator
      */
-    public function getDataForInterfacesAssertion(): Generator
+    public function getDataForInterfacesAssertion(): \Generator
     {
         // Strong typing
         yield [EditTaxHandler::class, EditTaxCommand::class, [EditTaxHandlerInterface::class]];
@@ -134,9 +132,9 @@ class CommandHandlerDefinitionParserTest extends TestCase
     }
 
     /**
-     * @return Generator
+     * @return \Generator
      */
-    public function getDataForClassNamesAssertion(): Generator
+    public function getDataForClassNamesAssertion(): \Generator
     {
         // Strong typing
         yield [EditTaxHandler::class, EditTaxCommand::class];
@@ -164,9 +162,9 @@ class CommandHandlerDefinitionParserTest extends TestCase
     }
 
     /**
-     * @return Generator
+     * @return \Generator
      */
-    public function getDataForTypeAssertion(): Generator
+    public function getDataForTypeAssertion(): \Generator
     {
         // Strong typing
         yield [EditTaxHandler::class, EditTaxCommand::class, 'command'];
@@ -193,7 +191,7 @@ class CommandHandlerDefinitionParserTest extends TestCase
         $this->assertEquals($expectedDescription, $definition->getDescription());
     }
 
-    public function getDataForDescriptionAssertion(): Generator
+    public function getDataForDescriptionAssertion(): \Generator
     {
         // Strong typing
         yield [EditTaxHandler::class, EditTaxCommand::class, 'Edits given tax with provided data (uses strong typing)'];
@@ -214,15 +212,15 @@ class CommandHandlerDefinitionParserTest extends TestCase
      */
     public function testItThrowsExceptionWhenNonExistingCommandOrHandlerNameIsGiven(string $handler, string $command): void
     {
-        $this->expectException(ReflectionException::class);
+        $this->expectException(\ReflectionException::class);
 
         $this->parser->parseDefinition($handler, $command);
     }
 
     /**
-     * @return Generator
+     * @return \Generator
      */
-    public function getDataForReflectionExceptionAssertion(): Generator
+    public function getDataForReflectionExceptionAssertion(): \Generator
     {
         yield [EditTaxHandler::class, 'randomNoSuchClass'];
         yield ['randomNoSuchHandlerclass', AddManufacturerCommand::class];
@@ -242,9 +240,9 @@ class CommandHandlerDefinitionParserTest extends TestCase
     }
 
     /**
-     * @return Generator
+     * @return \Generator
      */
-    public function getDataForReturnTypeAssertion(): Generator
+    public function getDataForReturnTypeAssertion(): \Generator
     {
         // Strong typing
         yield [EditTaxHandler::class, EditTaxCommand::class, 'void'];
@@ -290,9 +288,9 @@ class CommandHandlerDefinitionParserTest extends TestCase
     }
 
     /**
-     * @return Generator
+     * @return \Generator
      */
-    public function getDataForConstructorParamsAssertion(): Generator
+    public function getDataForConstructorParamsAssertion(): \Generator
     {
         // Using strong types
         yield [AddTaxHandler::class, AddTaxCommand::class, ['array $localizedNames', 'float $rate', 'bool $enabled']];
@@ -370,7 +368,7 @@ class CommandHandlerDefinitionParserTest extends TestCase
         Assert::assertEquals($expectedSimpleClassName, $definition->getSimpleCommandClass());
     }
 
-    public function getDataForSimpleClassName(): Generator
+    public function getDataForSimpleClassName(): \Generator
     {
         yield [AddTaxHandler::class, AddTaxCommand::class, 'AddTaxCommand'];
         yield [EditTaxHandler::class, EditTaxCommand::class, 'EditTaxCommand'];
@@ -391,7 +389,7 @@ class CommandHandlerDefinitionParserTest extends TestCase
         Assert::assertEquals($expectedSlugName, $definition->getSlugName());
     }
 
-    public function getDataForSlugName(): Generator
+    public function getDataForSlugName(): \Generator
     {
         yield [AddTaxHandler::class, AddTaxCommand::class, 'add-tax-command'];
         yield [EditTaxHandler::class, EditTaxCommand::class, 'edit-tax-command'];

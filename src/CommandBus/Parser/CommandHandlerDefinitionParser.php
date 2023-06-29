@@ -29,9 +29,6 @@ declare(strict_types=1);
 namespace PrestaShop\DocToolsBundle\CommandBus\Parser;
 
 use PrestaShop\DocToolsBundle\Util\String\StringModifier;
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionParameter;
 
 class CommandHandlerDefinitionParser
 {
@@ -71,8 +68,8 @@ class CommandHandlerDefinitionParser
      */
     public function parseDefinition(string $handlerClass, string $commandClass): CommandHandlerDefinition
     {
-        $commandReflection = new ReflectionClass($commandClass);
-        $handlerReflection = new ReflectionClass($handlerClass);
+        $commandReflection = new \ReflectionClass($commandClass);
+        $handlerReflection = new \ReflectionClass($handlerClass);
         $simpleClass = substr($commandClass, strrpos($commandClass, '\\') + 1);
         $slugName = $this->stringModifier->convertCamelCaseToKebabCase($simpleClass);
 
@@ -91,11 +88,11 @@ class CommandHandlerDefinitionParser
     }
 
     /**
-     * @param ReflectionClass $command
+     * @param \ReflectionClass $command
      *
      * @return string[]
      */
-    private function parseCommandConstructorParams(ReflectionClass $command): array
+    private function parseCommandConstructorParams(\ReflectionClass $command): array
     {
         if (!$constructor = $command->getConstructor()) {
             return [];
@@ -131,11 +128,11 @@ class CommandHandlerDefinitionParser
     /**
      * Parses return type from docblock
      *
-     * @param ReflectionClass $handlerReflection
+     * @param \ReflectionClass $handlerReflection
      *
      * @return string
      */
-    private function parseReturnType(ReflectionClass $handlerReflection): ?string
+    private function parseReturnType(\ReflectionClass $handlerReflection): ?string
     {
         $method = $handlerReflection->getMethod(self::HANDLER_METHOD_NAME);
 
@@ -162,11 +159,11 @@ class CommandHandlerDefinitionParser
 
     /**
      * @param string $returnType
-     * @param ReflectionClass $handlerReflection
+     * @param \ReflectionClass $handlerReflection
      *
      * @return string
      */
-    private function getFullyQualifiedClassName(string $returnType, ReflectionClass $handlerReflection, ReflectionClass $interfaceReflection): string
+    private function getFullyQualifiedClassName(string $returnType, \ReflectionClass $handlerReflection, \ReflectionClass $interfaceReflection): string
     {
         $isArray = false;
         if (preg_match(self::IS_ARRAY_REGEXP, $returnType, $matches)) {
@@ -184,12 +181,12 @@ class CommandHandlerDefinitionParser
     }
 
     /**
-     * @param ReflectionClass $reflectionClass
+     * @param \ReflectionClass $reflectionClass
      * @param string $returnType
      *
      * @return string|null
      */
-    private function searchFullNameFromUseStatements(ReflectionClass $reflectionClass, string $returnType): ?string
+    private function searchFullNameFromUseStatements(\ReflectionClass $reflectionClass, string $returnType): ?string
     {
         $fileName = $reflectionClass->getFileName();
         $fileCode = file_get_contents($fileName);
@@ -205,11 +202,11 @@ class CommandHandlerDefinitionParser
     }
 
     /**
-     * @param ReflectionMethod $method
+     * @param \ReflectionMethod $method
      *
      * @return string|null
      */
-    private function parseReturnTypeFromDocblock(ReflectionMethod $method): ?string
+    private function parseReturnTypeFromDocblock(\ReflectionMethod $method): ?string
     {
         $docBlock = $method->getDocComment();
         if (!$docBlock) {
@@ -225,11 +222,11 @@ class CommandHandlerDefinitionParser
     }
 
     /**
-     * @param ReflectionMethod $method
+     * @param \ReflectionMethod $method
      *
      * @return string|null
      */
-    private function parseConstructorTypeFromDocblock(ReflectionMethod $method, ReflectionParameter $parameter): ?string
+    private function parseConstructorTypeFromDocblock(\ReflectionMethod $method, \ReflectionParameter $parameter): ?string
     {
         $docBlock = $method->getDocComment();
         if (!$docBlock) {
@@ -246,11 +243,11 @@ class CommandHandlerDefinitionParser
     }
 
     /**
-     * @param ReflectionClass $reflectionClass
+     * @param \ReflectionClass $reflectionClass
      *
      * @return string
      */
-    private function parseDescription(ReflectionClass $reflectionClass): string
+    private function parseDescription(\ReflectionClass $reflectionClass): string
     {
         if (!$docBlock = $reflectionClass->getDocComment()) {
             return '';

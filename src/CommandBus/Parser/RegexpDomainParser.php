@@ -30,8 +30,8 @@ namespace PrestaShop\DocToolsBundle\CommandBus\Parser;
 
 class RegexpDomainParser implements DomainParserInterface
 {
-    const CORE_DOMAIN_REGEXP = '/PrestaShop\\\\PrestaShop\\\\Core\\\\Domain\\\\([a-zA-Z]+)\\\\/';
-    const TEST_DOMAIN_REGEXP = '/Tests\\\\Resources\\\\Domain\\\\([a-zA-Z]+)\\\\/';
+    public const CORE_DOMAIN_REGEXP = '/PrestaShop\\\\PrestaShop\\\\Core\\\\Domain\\\\([a-zA-Z]+)\\\\/';
+    public const TEST_DOMAIN_REGEXP = '/Tests\\\\Resources\\\\Domain\\\\([a-zA-Z]+)\\\\/';
 
     /**
      * @var string

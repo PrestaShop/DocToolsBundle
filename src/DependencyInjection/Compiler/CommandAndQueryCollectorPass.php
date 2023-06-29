@@ -28,8 +28,6 @@ namespace PrestaShop\DocToolsBundle\DependencyInjection\Compiler;
 
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
-use ReflectionAttribute;
-use ReflectionClass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -65,7 +63,7 @@ class CommandAndQueryCollectorPass implements CompilerPassInterface
             if (count(current($value)) == 0) {
                 continue;
             }
-            
+
             $definition = $container->getDefinition($key);
             $handlerAttributes = $this->getHandlerAttributes($key);
             $this->processHandlerAttributes($handlerAttributes, $definition->getClass(), $value, $commands, $queries);
@@ -77,11 +75,11 @@ class CommandAndQueryCollectorPass implements CompilerPassInterface
     /**
      * Get the attributes of a message handler using reflection.
      *
-     * @return ReflectionAttribute[]
+     * @return \ReflectionAttribute[]
      */
     private function getHandlerAttributes(string $handlerClassName): array
     {
-        $handler = new ReflectionClass($handlerClassName);
+        $handler = new \ReflectionClass($handlerClassName);
 
         return $handler->getAttributes();
     }
@@ -89,7 +87,7 @@ class CommandAndQueryCollectorPass implements CompilerPassInterface
     /**
      * Process the handler attributes and add commands and queries to the result.
      *
-     * @param ReflectionAttribute[] $handlerAttributes
+     * @param \ReflectionAttribute[] $handlerAttributes
      * @param string $key
      * @param array $value
      * @param string[] $commands
@@ -104,7 +102,7 @@ class CommandAndQueryCollectorPass implements CompilerPassInterface
             $isQueryHandler = $handlerAttribute->getName() === AsQueryHandler::class;
 
             if (isset(current($value)['handles'])) {
-                if (($isCommandHandler)) {
+                if ($isCommandHandler) {
                     $commands[$key] = current($value)['handles'];
                 } elseif ($isQueryHandler) {
                     $queries[$key] = current($value)['handles'];

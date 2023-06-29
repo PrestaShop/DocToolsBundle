@@ -45,8 +45,7 @@ class ListCommandsAndQueriesCommand extends Command
     public function __construct(
         private readonly CommandHandlerCollection $handlerDefinitionCollection,
         private readonly array $commandsAndQueries,
-    )
-    {
+    ) {
         parent::__construct();
     }
 

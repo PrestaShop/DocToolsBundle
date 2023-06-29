@@ -28,7 +28,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\String;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
 use PrestaShop\DocToolsBundle\Util\String\StringModifier;
 
@@ -49,9 +48,9 @@ class StringModifierTest extends TestCase
     }
 
     /**
-     * @return Generator
+     * @return \Generator
      */
-    public function getDataForCamelCaseToKebabCaseConversion(): Generator
+    public function getDataForCamelCaseToKebabCaseConversion(): \Generator
     {
         yield ['HelloWorld', 'hello-world'];
         yield ['helloWorld', 'hello-world'];

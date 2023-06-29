@@ -62,12 +62,12 @@ class AddSupplierCommand
         array $localizedMetaDescriptions,
         array $localizedMetaKeywords,
         array $shopAssociation,
-        ?string $address2 = null,
-        ?string $postCode = null,
-        ?int $stateId = null,
-        ?string $phone = null,
+        string $address2 = null,
+        string $postCode = null,
+        int $stateId = null,
+        string $phone = null,
         string $mobilePhone = '',
-        ?string $dni = null,
+        string $dni = null,
         ?int $zipCode = 0
     ) {
         $this->name = $name;
