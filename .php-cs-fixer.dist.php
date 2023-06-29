@@ -10,7 +10,10 @@ $finder = PhpCsFixer\Finder::create()
 ])
 ;
 
-return PhpCsFixer\Config::create()
+
+$config = new PhpCsFixer\Config();
+
+return $config
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
@@ -39,9 +42,9 @@ return PhpCsFixer\Config::create()
         ],
         'phpdoc_summary' => false,
         'protected_to_private' => false,
-        'psr4' => false,
+        'psr_autoloading' => false,
         'self_accessor' => false,
-        'yoda_style' => null,
+        'yoda_style' => false,
         'single_line_throw' => false,
         'no_alias_language_construct_call' => false,
     ])
