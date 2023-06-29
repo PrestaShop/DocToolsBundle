@@ -58,15 +58,14 @@ class CommandAndQueryCollectorPass implements CompilerPassInterface
     {
         $handlers = $container->findTaggedServiceIds('messenger.message_handler');
         $commands = [];
-        $queries = [];
         foreach ($handlers as $key => $value) {
             if (count(current($value)) == 0) {
                 continue;
             }
 
-            $definition = $container->getDefinition($key);
-            $handlerAttributes = $this->getHandlerAttributes($key);
-            $this->processHandlerAttributes($handlerAttributes, $definition->getClass(), $value, $commands, $queries);
+            $className = $container->getDefinition($key)->getClass();
+            $handlerAttributes = $this->getHandlerAttributes($className);
+            $this->processHandlerAttributes($handlerAttributes, $className, $value, $commands);
         }
 
         return $commands;
@@ -91,22 +90,17 @@ class CommandAndQueryCollectorPass implements CompilerPassInterface
      * @param string $key
      * @param array $value
      * @param string[] $commands
-     * @param string[] $queries
      *
      * @return void
      */
-    private function processHandlerAttributes(array $handlerAttributes, string $key, array $value, array &$commands, array &$queries): void
+    private function processHandlerAttributes(array $handlerAttributes, string $key, array $value, array &$commands): void
     {
         foreach ($handlerAttributes as $handlerAttribute) {
             $isCommandHandler = $handlerAttribute->getName() === AsCommandHandler::class;
             $isQueryHandler = $handlerAttribute->getName() === AsQueryHandler::class;
 
-            if (isset(current($value)['handles'])) {
-                if ($isCommandHandler) {
-                    $commands[$key] = current($value)['handles'];
-                } elseif ($isQueryHandler) {
-                    $queries[$key] = current($value)['handles'];
-                }
+            if (($isCommandHandler || $isQueryHandler) && isset(current($value)['handles'])) {
+                $commands[$key] = current($value)['handles'];
             }
         }
     }
