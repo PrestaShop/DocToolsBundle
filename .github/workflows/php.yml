@@ -67,11 +67,15 @@ jobs:
   phpunit:
     name: PHPUnit Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ '8.1' ]
+      fail-fast: false
     steps:
       -   name: Setup PHP
           uses: shivammathur/setup-php@v2
           with:
-            php-version: '8.1'
+            php-version: ${{ matrix.php }}
             extensions: mbstring, intl, gd, xml, dom, json, fileinfo, curl, zip, iconv, simplexml
       -   uses: actions/checkout@v2
 
@@ -99,11 +103,15 @@ jobs:
   integration:
     name: Integration Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ '8.1' ]
+      fail-fast: false
     steps:
       -   name: Setup PHP
           uses: shivammathur/setup-php@v2
           with:
-            php-version: '8.1'
+            php-version: ${{ matrix.php }}
             extensions: mbstring, intl, gd, xml, dom, json, fileinfo, curl, zip, iconv, simplexml
       -   uses: actions/checkout@v2
 
