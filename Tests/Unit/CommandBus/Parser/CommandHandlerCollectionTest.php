@@ -28,7 +28,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\CommandBus\Parser;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinition;
@@ -128,7 +127,7 @@ class CommandHandlerCollectionTest extends TestCase
         }
     }
 
-    public function getDomainData(): Generator
+    public function getDomainData(): \Generator
     {
         yield [
             [
@@ -226,7 +225,7 @@ class CommandHandlerCollectionTest extends TestCase
         }
     }
 
-    public function getDefinitionsData(): Generator
+    public function getDefinitionsData(): \Generator
     {
         yield [
             [

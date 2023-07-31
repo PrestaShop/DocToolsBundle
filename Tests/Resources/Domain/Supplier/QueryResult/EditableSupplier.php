@@ -160,7 +160,7 @@ class EditableSupplier
         bool $enabled,
         array $associatedShops,
         string $dni,
-        ?array $logoImage = null
+        array $logoImage = null
     ) {
         $this->supplierId = $supplierId;
         $this->name = $name;

@@ -27,7 +27,7 @@
 namespace PrestaShop\DocToolsBundle\Command;
 
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerCollection;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,23 +35,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Lists all commands and queries definitions
  */
-class ListCommandsAndQueriesCommand extends ContainerAwareCommand
+class ListCommandsAndQueriesCommand extends Command
 {
     /**
      * @var string
      */
     protected static $defaultName = 'prestashop:doc-tools:list-commands-and-queries';
 
-    /**
-     * @var CommandHandlerCollection
-     */
-    private $handlerDefinitionCollection;
-
     public function __construct(
-        CommandHandlerCollection $handlerDefinitionCollection
+        private readonly CommandHandlerCollection $handlerDefinitionCollection,
+        private readonly array $commandsAndQueries,
     ) {
         parent::__construct();
-        $this->handlerDefinitionCollection = $handlerDefinitionCollection;
     }
 
     /**
@@ -61,8 +56,7 @@ class ListCommandsAndQueriesCommand extends ContainerAwareCommand
     {
         $this
             ->setName('prestashop:doc-tools:commands-and-queries')
-            ->setDescription('Lists available CQRS commands and queries')
-        ;
+            ->setDescription('Lists available CQRS commands and queries');
     }
 
     /**
@@ -73,8 +67,7 @@ class ListCommandsAndQueriesCommand extends ContainerAwareCommand
         $outputStyle = new OutputFormatterStyle('blue', null);
         $output->getFormatter()->setStyle('blue', $outputStyle);
 
-        $handlerAssociations = $this->getContainer()->getParameter('doc_tools.commands_and_queries');
-        $definitions = $this->handlerDefinitionCollection->getDefinitions($handlerAssociations);
+        $definitions = $this->handlerDefinitionCollection->getDefinitions($this->commandsAndQueries);
 
         $i = 1;
         foreach ($definitions as $commandDefinition) {

@@ -8,7 +8,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: '8.1'
           extensions: mbstring, intl, gd, xml, dom, json, fileinfo, curl, zip, iconv
       - uses: actions/checkout@v2
 
@@ -41,7 +41,7 @@ jobs:
       -   name: Setup PHP
           uses: shivammathur/setup-php@v2
           with:
-            php-version: '7.4'
+            php-version: '8.1'
             extensions: mbstring, intl, gd, xml, dom, json, fileinfo, curl, zip, iconv, simplexml
       -   uses: actions/checkout@v2
 
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.2', '7.3', '7.4']
+        php: [ '8.1' ]
       fail-fast: false
     steps:
       -   name: Setup PHP
@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.2', '7.3', '7.4']
+        php: [ '8.1' ]
       fail-fast: false
     steps:
       -   name: Setup PHP
