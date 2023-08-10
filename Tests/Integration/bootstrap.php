@@ -26,3 +26,7 @@
 if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
     define('PHPUNIT_COMPOSER_INSTALL', __DIR__ . '/../../vendor/autoload.php');
 }
+
+if (!defined('_PS_VERSION_')) {
+    define('_PS_VERSION_', '9.0.0');
+}

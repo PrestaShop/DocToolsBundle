@@ -59,7 +59,8 @@ $ composer require prestashop/doc-tools-bundle
 # app/config/config.yml
 doc_tools:
   docs_src_path: /root/path/to/docs/project/src
-  cqrs_folder: content/1.7/development/architecture/domain/references
+  cqrs_folder: development/architecture/domain/references
+  partial_folder: content/8/development/architecture/domain/references
 ```
 
 4. **How to use**

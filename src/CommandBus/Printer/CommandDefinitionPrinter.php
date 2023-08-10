@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace PrestaShop\DocToolsBundle\CommandBus\Printer;
 
+use _PHPStan_b8e553790\Nette\Neon\Exception;
 use PrestaShop\DocToolsBundle\CommandBus\Parser\CommandHandlerDefinition;
 use PrestaShop\DocToolsBundle\Util\String\StringModifier;
 use Symfony\Component\Filesystem\Filesystem;
@@ -56,6 +57,11 @@ class CommandDefinitionPrinter
     private $cqrsFolder;
 
     /**
+     * @var string
+     */
+    private $partialFolder;
+
+    /**
      * @var bool
      */
     private $forceRefresh;
@@ -75,12 +81,14 @@ class CommandDefinitionPrinter
         Filesystem $filesystem,
         Environment $twig,
         StringModifier $stringModifier,
-        string $cqrsFolder
+        string $cqrsFolder,
+        string $partialFolder
     ) {
         $this->filesystem = $filesystem;
         $this->twig = $twig;
         $this->stringModifier = $stringModifier;
         $this->cqrsFolder = $cqrsFolder;
+        $this->partialFolder = $partialFolder;
     }
 
     public function printDefinitionsDocumentation(
@@ -149,6 +157,18 @@ class CommandDefinitionPrinter
             return;
         }
 
+        foreach ($domainDefinitions as $type => $definitions) {
+            foreach ($definitions as $definition) {
+                $definitionFilePath = $this->getDefinitionFilePath($definition, $domain);
+                if (!$this->filesystem->exists($definitionFilePath)) {
+                    if (!defined('_PS_VERSION_')) {
+                        throw new Exception('Please define _PS_VERSION_ constant');
+                    }
+                    $definition->minver = _PS_VERSION_;
+                }
+            }
+        }
+
         $content = $this->twig->render('@PrestaShopDocTools/Commands/CQRS/cqrs-domain.md.twig', [
             'domain' => $domain,
             'domainDefinitions' => $domainDefinitions,
@@ -197,7 +217,7 @@ class CommandDefinitionPrinter
     {
         return sprintf(
             '%s/%s/_partials',
-            $this->cqrsFolder,
+            $this->partialFolder,
             $this->stringModifier->convertCamelCaseToKebabCase($domain)
         );
     }
